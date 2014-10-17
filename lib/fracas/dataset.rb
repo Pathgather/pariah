@@ -44,6 +44,14 @@ module Fracas
       end
     end
 
+    def count
+      if @results
+        @results['hits']['total']
+      else
+        load.count
+      end
+    end
+
     def filter(condition = {})
       merge filters: condition
     end

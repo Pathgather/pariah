@@ -56,6 +56,20 @@ describe Fracas::Dataset do
     end
   end
 
+  context "#count" do
+    it "should return a count of matching documents without mutating the dataset" do
+      store body: {title: "Title 1", comments_count: 5}
+      store body: {title: "Title 2", comments_count: 9}
+      store body: {title: "Title 3", comments_count: 5}
+      FTS.refresh
+
+      ds = FTS.filter(comments_count: 5)
+      ds.results.should be_nil
+      ds.count.should == 2
+      ds.results.should be_nil
+    end
+  end
+
   context "#load" do
     it "should copy the dataset and load the results into it" do
       store body: {title: "Title 1", comments_count: 5}
