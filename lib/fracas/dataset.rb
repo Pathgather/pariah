@@ -2,7 +2,7 @@ module Fracas
   class Dataset
     include Enumerable
 
-    attr_reader :client, :query
+    attr_reader :client, :query, :results
 
     def initialize(url)
       @query = {
@@ -29,11 +29,19 @@ module Fracas
     alias :from_type :from_types
 
     def each(&block)
-      all.each(&block)
+      if @results
+        all.each(&block)
+      else
+        load.each(&block)
+      end
     end
 
     def all
-      @client.search(to_query)['hits']['hits'].map { |hit| hit['_source'] }
+      if @results
+        @results['hits']['hits'].map { |hit| hit['_source'] }
+      else
+        load.all
+      end
     end
 
     def filter(condition = {})
@@ -63,6 +71,14 @@ module Fracas
         else raise "Unrecognized key! #{key.inspect}"
         end
       end
+    end
+
+    def load
+      clone.tap(&:load!)
+    end
+
+    def load!
+      @results = @client.search(to_query)
     end
 
     private
