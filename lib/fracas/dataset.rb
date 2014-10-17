@@ -29,27 +29,15 @@ module Fracas
     alias :from_type :from_types
 
     def each(&block)
-      if @results
-        all.each(&block)
-      else
-        load.each(&block)
-      end
+      with_loaded_results { |ds| ds.all.each(&block) }
     end
 
     def all
-      if @results
-        @results['hits']['hits'].map { |hit| hit['_source'] }
-      else
-        load.all
-      end
+      with_loaded_results { |ds| ds.results['hits']['hits'].map { |hit| hit['_source'] } }
     end
 
     def count
-      if @results
-        @results['hits']['total']
-      else
-        load.count
-      end
+      with_loaded_results { |ds| ds.results['hits']['total'] }
     end
 
     def filter(condition = {})
@@ -90,6 +78,10 @@ module Fracas
     end
 
     private
+
+    def with_loaded_results
+      yield results ? self : load
+    end
 
     def indices
       indices = @query[:indices]
