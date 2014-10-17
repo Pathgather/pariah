@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Fracas::Dataset do
   context "#each" do
-    it "should return the JSON documents matching the search" do
+    it "should iterate over the JSON documents matching the search" do
       store body: {title: "Title 1"}
       store body: {title: "Title 2"}
       FTS.refresh
@@ -12,6 +12,8 @@ describe Fracas::Dataset do
         titles << doc['title']
       end
       titles.sort.should == ["Title 1", "Title 2"]
+
+      FTS.each{|d| d}.should == FTS.all
     end
 
     it "should not load the results into the dataset on which it is called" do
@@ -81,6 +83,9 @@ describe Fracas::Dataset do
 
       ds2 = ds1.load
       ds2.results.should_not be_nil
+
+      ds2.count.should == 2
+      ds2.all.length.should == 2
 
       ds1.results.should be_nil
     end
