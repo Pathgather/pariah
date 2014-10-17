@@ -1,12 +1,12 @@
 require 'elasticsearch'
 
-require 'fracas/cluster'
+require 'fracas/dataset'
 require 'fracas/version'
 
 module Fracas
   class << self
     def connect(url = nil)
-      Cluster.new(url)
+      Dataset.new(url)
     end
   end
 end

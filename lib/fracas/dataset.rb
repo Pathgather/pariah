@@ -1,5 +1,5 @@
 module Fracas
-  class Cluster
+  class Dataset
     attr_reader :client
 
     def initialize(url)
