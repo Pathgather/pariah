@@ -46,8 +46,8 @@ module Fracas
 
     def to_query
       query = {
-        index: indices,
-        type: types,
+        index: indices.join(','),
+        type: types.join(','),
         body: {
           query: queries,
           filter: filters
@@ -77,6 +77,19 @@ module Fracas
       @results = @client.search(to_query)
     end
 
+    def index(doc)
+      i = indices
+      t = types
+
+      raise "Need exactly one index for a document, attempted to use: #{i.inspect}" unless i.length == 1 and i.first != '_all'
+      raise "Need exactly one type for a document, attempted to use: #{t.inspect}" unless t.length == 1
+
+      @client.index index: i.first,
+                    type:  t.first,
+                    id:    doc[:id],
+                    body:  doc
+    end
+
     private
 
     def with_loaded_results
@@ -85,12 +98,20 @@ module Fracas
 
     def indices
       indices = @query[:indices]
-      indices.count.zero? ? '_all' : indices.join(',')
+      if indices.count.zero?
+        ['_all']
+      else
+        indices
+      end
     end
 
     def types
       types = @query[:types]
-      types.join(',') unless types.count.zero?
+      if types.count.zero?
+        []
+      else
+        types
+      end
     end
 
     def queries
