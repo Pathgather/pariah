@@ -69,6 +69,32 @@ module Fracas
       end
     end
 
+    def add_percolator(id)
+      i = indices
+      raise "Need exactly one index for a percolator, attempted to use: #{i.inspect}" unless i.length == 1 and i.first != '_all'
+
+      @client.index index: i.first,
+                    type:  '.percolator',
+                    id:    id,
+                    body: {
+                      query: queries,
+                      filter: filters
+                    }
+    end
+
+    def percolate(doc)
+      i = indices
+      raise "Need exactly one index for a percolator, attempted to use: #{i.inspect}" unless i.length == 1 and i.first != '_all'
+
+      result = @client.percolate index: i.first,
+                                 type: 'what-goes-here-doesnt-matter',
+                                 body: {
+                                   doc: doc
+                                 }
+
+      result['matches'].map { |match| match['_id'] }
+    end
+
     def load
       clone.tap(&:load!)
     end
