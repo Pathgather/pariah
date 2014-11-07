@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Fracas::Dataset, "#index" do
+  after { clear_indices }
+
   it "should persist the given document in the given type and index" do
     FTS.from_type('my_type').from_index('my_index').index title: "My Document", body: "Blah blah blah",   number: 5
     FTS.from_type('my_type').from_index('my_index').index title: "Another Doc", body: "More stupid text", number: 7

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Fracas::Dataset, '#from_indices' do
+  after { clear_indices }
+
   it "should specify the index(es) to be covered by the search" do
     store index: 'index1', body: {title: "Title 1", comments_count: 1}
     store index: 'index1', body: {title: "Title 2", comments_count: 2}

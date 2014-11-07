@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Fracas::Dataset do
+  after { clear_indices }
+
   context "#each" do
     it "should iterate over the JSON documents matching the search" do
       store body: {title: "Title 1"}

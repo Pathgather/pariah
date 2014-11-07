@@ -6,10 +6,6 @@ FTS = Fracas.connect
 
 RSpec.configure do |config|
   config.expect_with(:rspec) { |c| c.syntax = [:expect, :should] }
-
-  config.before do
-    FTS.client.indices.delete index: '_all'
-  end
 end
 
 def store(index: 'fracas_test', type: 'fracas_test', body: {})
@@ -22,4 +18,8 @@ def store(index: 'fracas_test', type: 'fracas_test', body: {})
                      published: rand > 0.5,
                      comments_count: rand(50)
                    }.merge(body)
+end
+
+def clear_indices
+  FTS.client.indices.delete index: '_all'
 end

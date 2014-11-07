@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Fracas::Dataset, '#from_types' do
+  after { clear_indices }
+
   it "should specify the type(s) to be returned by the search" do
     store type: 'type1', body: {title: "Title 1", comments_count: 1}
     store type: 'type1', body: {title: "Title 2", comments_count: 2}
