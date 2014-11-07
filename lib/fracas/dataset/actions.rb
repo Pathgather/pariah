@@ -2,7 +2,7 @@ module Fracas
   class Dataset
     module Actions
       def refresh
-        @client.indices.refresh index: indices
+        @client.indices.refresh index: indices_as_string
       end
 
       def each(&block)
@@ -19,8 +19,8 @@ module Fracas
 
       def to_query
         query = {
-          index: indices.join(','),
-          type: types.join(','),
+          index: indices_as_string,
+          type: types_as_string,
           body: {
             query: queries,
             filter: filters
@@ -29,10 +29,7 @@ module Fracas
       end
 
       def add_percolator(id)
-        i = indices
-        raise "Need exactly one index for a percolator, attempted to use: #{i.inspect}" unless i.length == 1 and i.first != '_all'
-
-        @client.index index: i.first,
+        @client.index index: single_index,
                       type:  '.percolator',
                       id:    id,
                       body: {
@@ -42,10 +39,7 @@ module Fracas
       end
 
       def percolate(doc)
-        i = indices
-        raise "Need exactly one index for a percolator, attempted to use: #{i.inspect}" unless i.length == 1 and i.first != '_all'
-
-        result = @client.percolate index: i.first,
+        result = @client.percolate index: single_index,
                                    type: 'what-goes-here-doesnt-matter',
                                    body: {
                                      doc: doc
@@ -63,32 +57,14 @@ module Fracas
       end
 
       def index(doc)
-        i = indices
-        t = types
-
-        raise "Need exactly one index for a document, attempted to use: #{i.inspect}" unless i.length == 1 and i.first != '_all'
-        raise "Need exactly one type for a document, attempted to use: #{t.inspect}" unless t.length == 1
-
-        @client.index index: i.first,
-                      type:  t.first,
+        @client.index index: single_index,
+                      type:  single_type,
                       id:    doc[:id],
                       body:  doc
       end
 
       def with_loaded_results
         yield results ? self : load
-      end
-
-      def indices
-        if (indices = @query[:indices]).empty?
-          ['_all']
-        else
-          indices
-        end
-      end
-
-      def types
-        @query[:types]
       end
 
       def queries

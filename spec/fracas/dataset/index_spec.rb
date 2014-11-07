@@ -10,12 +10,12 @@ describe Fracas::Dataset, "#index" do
   end
 
   it "should raise an error if one index isn't specified" do
-    proc { FTS.from_type('my_type').index(field: "blah") }.should raise_error RuntimeError, /Need exactly one index for a document/
-    proc { FTS.from_type('my_type').from_index('index1', 'index2').index(field: "blah") }.should raise_error RuntimeError, /Need exactly one index for a document/
+    proc { FTS.from_type('my_type').index(field: "blah") }.should raise_error RuntimeError, /Need exactly one index/
+    proc { FTS.from_type('my_type').from_index('index1', 'index2').index(field: "blah") }.should raise_error RuntimeError, /Need exactly one index/
   end
 
   it "should raise an error if one type isn't specified" do
-    proc { FTS.from_index('my_index').index(field: "blah") }.should raise_error RuntimeError, /Need exactly one type for a document/
-    proc { FTS.from_index('my_index').from_type('type1', 'type2').index(field: "blah") }.should raise_error RuntimeError, /Need exactly one type for a document/
+    proc { FTS.from_index('my_index').index(field: "blah") }.should raise_error RuntimeError, /Need exactly one type/
+    proc { FTS.from_index('my_index').from_type('type1', 'type2').index(field: "blah") }.should raise_error RuntimeError, /Need exactly one type/
   end
 end
