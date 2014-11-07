@@ -2,7 +2,7 @@ module Fracas
   class Dataset
     module Query
       def to_query
-        query = {
+        {
           index: indices.join(','),
           type: types.join(','),
           body: {
@@ -13,8 +13,7 @@ module Fracas
       end
 
       def indices
-        indices = @query[:indices]
-        if indices.count.zero?
+        if (indices = @query[:indices]).empty?
           ['_all']
         else
           indices
@@ -22,12 +21,7 @@ module Fracas
       end
 
       def types
-        types = @query[:types]
-        if types.count.zero?
-          []
-        else
-          types
-        end
+        @query[:types]
       end
 
       def queries
