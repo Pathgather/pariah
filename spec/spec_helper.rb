@@ -8,7 +8,7 @@ RSpec.configure do |config|
   config.expect_with(:rspec) { |c| c.syntax = [:expect, :should] }
 end
 
-def store(index: 'pariah_test', type: 'pariah_test', body: {})
+def store(index: 'pariah_test_default', type: 'pariah_test', body: {})
   FTS.client.index index: index,
                    type: type,
                    body: {
@@ -21,5 +21,5 @@ def store(index: 'pariah_test', type: 'pariah_test', body: {})
 end
 
 def clear_indices
-  FTS.client.indices.delete index: '_all'
+  FTS.client.indices.delete index: 'pariah_test_*'
 end
