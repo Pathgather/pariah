@@ -17,23 +17,8 @@ module Pariah
         with_loaded_results { |ds| ds.results['hits']['total'] }
       end
 
-      def to_query
-        query = {
-          index: indices_as_string,
-          type: types_as_string,
-          body: {
-            query: queries,
-            filter: filters
-          }
-        }
-      end
-
       def load
         clone.tap(&:load!)
-      end
-
-      def load!
-        @results = @client.search(to_query)
       end
 
       def index(doc)
@@ -43,8 +28,14 @@ module Pariah
                       body:  doc
       end
 
+      def load!
+        @results = @client.search(to_query)
+      end
+
+      private
+
       def with_loaded_results
-        yield results ? self : load
+        yield(results ? self : load)
       end
 
       def queries

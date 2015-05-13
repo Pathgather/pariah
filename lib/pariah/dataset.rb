@@ -15,7 +15,7 @@ module Pariah
       @query = {
         indices: [],
         types:   [],
-        filters: []
+        filters: [],
       }
 
       @client = if url_or_client.is_a?(Elasticsearch::Transport::Client)

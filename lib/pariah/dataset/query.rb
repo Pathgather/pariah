@@ -20,6 +20,7 @@ module Pariah
 
       def filters
         filters = @query[:filters]
+
         if filters.count.zero?
           {
             match_all: {}
