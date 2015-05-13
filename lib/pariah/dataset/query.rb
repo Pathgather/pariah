@@ -21,18 +21,10 @@ module Pariah
       def filters
         filters = @query[:filters]
 
-        if filters.count.zero?
-          {
-            match_all: {}
-          }
-        else
-          {
-            and: filters.map { |w|
-              {
-                term: w
-              }
-            }
-          }
+        case filters.count
+        when 0 then { match_all: {} }
+        when 1 then {term: filters.first}
+        else        {and: filters.map{|w| {term: w}}}
         end
       end
 
