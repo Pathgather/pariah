@@ -33,6 +33,14 @@ module Pariah
         merge_replace(sort: args.flatten)
       end
 
+      def size(size)
+        merge_replace(size: size)
+      end
+
+      def from(from)
+        merge_replace(from: from)
+      end
+
       protected
 
       def merge_replace(query)

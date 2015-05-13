@@ -19,6 +19,14 @@ module Pariah
           body[:sort] = sort
         end
 
+        if size = @query[:size]
+          body[:size] = size
+        end
+
+        if from = @query[:from]
+          body[:from] = from
+        end
+
         {
           index: indices_as_string,
           type: types_as_string,

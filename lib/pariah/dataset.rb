@@ -16,6 +16,8 @@ module Pariah
         indices: [],
         types:   [],
         filters: [],
+        size:    nil,
+        from:    nil,
       }
 
       @client = if url_or_client.is_a?(Elasticsearch::Transport::Client)
