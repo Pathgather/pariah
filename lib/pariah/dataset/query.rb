@@ -2,13 +2,17 @@ module Pariah
   class Dataset
     module Query
       def to_query
+        body = {
+          query: queries,
+          filter: filters,
+        }
+
+        body[:sort] = @query[:sort] if @query[:sort]
+
         {
           index: indices_as_string,
           type: types_as_string,
-          body: {
-            query: queries,
-            filter: filters
-          }
+          body: body
         }
       end
 

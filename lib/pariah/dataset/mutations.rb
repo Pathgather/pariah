@@ -29,6 +29,10 @@ module Pariah
         merge_replace(filters: [])
       end
 
+      def sort(*args)
+        merge_replace(sort: args.flatten)
+      end
+
       protected
 
       def merge_replace(query)
