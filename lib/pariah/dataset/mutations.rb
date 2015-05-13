@@ -1,3 +1,6 @@
+require 'pariah/dataset/filters/and'
+require 'pariah/dataset/filters/term'
+
 module Pariah
   class Dataset
     module Mutations
@@ -22,11 +25,17 @@ module Pariah
       alias :append_type :append_types
 
       def filter(condition = {})
-        merge_append(filters: condition)
+        term = Filters::Term.new(condition)
+
+        if current_filter = @query[:filter]
+          merge_replace(filter: Filters::And.new(current_filter, term))
+        else
+          merge_replace(filter: term)
+        end
       end
 
       def unfiltered
-        merge_replace(filters: [])
+        merge_replace(filter: nil)
       end
 
       def sort(*args)

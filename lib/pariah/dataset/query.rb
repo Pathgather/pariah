@@ -8,11 +8,8 @@ module Pariah
           }
         }
 
-        if (filters = @query[:filters]).any?
-          body[:filter] = case filters.count
-                          when 1 then {term: filters.first}
-                          else        {and: filters.map{|w| {term: w}}}
-                          end
+        if filter = @query[:filter]
+          body[:filter] = filter.to_query
         end
 
         if sort = @query[:sort]

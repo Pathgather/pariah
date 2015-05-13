@@ -37,29 +37,6 @@ module Pariah
       def with_loaded_results
         yield(results ? self : load)
       end
-
-      def queries
-        {
-          match_all: {}
-        }
-      end
-
-      def filters
-        filters = @query[:filters]
-        if filters.count.zero?
-          {
-            match_all: {}
-          }
-        else
-          {
-            and: filters.map { |w|
-              {
-                term: w
-              }
-            }
-          }
-        end
-      end
     end
   end
 end

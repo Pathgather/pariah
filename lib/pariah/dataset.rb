@@ -15,7 +15,7 @@ module Pariah
       @query = {
         indices: [],
         types:   [],
-        filters: [],
+        filter:  nil,
         size:    nil,
         from:    nil,
       }
