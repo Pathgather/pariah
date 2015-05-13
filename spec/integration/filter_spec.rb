@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Fracas::Dataset, '#filter' do
+describe Pariah::Dataset, '#filter' do
   after { clear_indices }
 
   it "should add a filter to the search" do

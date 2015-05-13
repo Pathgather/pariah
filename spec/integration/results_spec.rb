@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Fracas::Dataset do
+describe Pariah::Dataset do
   after { clear_indices }
 
   context "#each" do

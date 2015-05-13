@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Fracas::Dataset, '#filter' do
+describe Pariah::Dataset, '#filter' do
   it "should return a new copy of the dataset" do
     ds1 = FTS.filter(comments_count: 5)
     ds1.query[:filters].should == [{comments_count: 5}]

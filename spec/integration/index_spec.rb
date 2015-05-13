@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Fracas::Dataset, "#index" do
+describe Pariah::Dataset, "#index" do
   after { clear_indices }
 
   it "should persist the given document in the given type and index" do

@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'fracas/version'
+require 'pariah/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'fracas'
-  spec.version       = Fracas::VERSION
+  spec.name          = 'pariah'
+  spec.version       = Pariah::VERSION
   spec.authors       = ["Chris Hanks"]
   spec.email         = ['christopher.m.hanks@gmail.com']
   spec.summary       = %q{Write a short summary. Required.}
   spec.description   = %q{Write a longer description. Optional.}
-  spec.homepage      = 'https://github.com/chanks/fracas'
+  spec.homepage      = 'https://github.com/pathgather/pariah'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")

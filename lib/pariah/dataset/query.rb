@@ -1,4 +1,4 @@
-module Fracas
+module Pariah
   class Dataset
     module Query
       def to_query

@@ -1,14 +1,14 @@
-require 'fracas'
+require 'pariah'
 require 'faker'
 require 'pry'
 
-FTS = Fracas.connect
+FTS = Pariah.connect
 
 RSpec.configure do |config|
   config.expect_with(:rspec) { |c| c.syntax = [:expect, :should] }
 end
 
-def store(index: 'fracas_test', type: 'fracas_test', body: {})
+def store(index: 'pariah_test', type: 'pariah_test', body: {})
   FTS.client.index index: index,
                    type: type,
                    body: {

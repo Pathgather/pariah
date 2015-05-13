@@ -1,9 +1,9 @@
 require 'elasticsearch'
 
-require 'fracas/dataset'
-require 'fracas/version'
+require 'pariah/dataset'
+require 'pariah/version'
 
-module Fracas
+module Pariah
   class << self
     def connect(url_or_client = nil)
       Dataset.new(url_or_client)

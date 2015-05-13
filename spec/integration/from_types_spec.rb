@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Fracas::Dataset, '#from_types' do
+describe Pariah::Dataset, '#from_types' do
   after { clear_indices }
 
   it "should specify the type(s) to be returned by the search" do

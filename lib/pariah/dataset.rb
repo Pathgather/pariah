@@ -1,8 +1,8 @@
-require 'fracas/dataset/mutations'
-require 'fracas/dataset/actions'
-require 'fracas/dataset/query'
+require 'pariah/dataset/mutations'
+require 'pariah/dataset/actions'
+require 'pariah/dataset/query'
 
-module Fracas
+module Pariah
   class Dataset
     include Enumerable
     include Mutations

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Fracas::Dataset, "#percolate" do
+describe Pariah::Dataset, "#percolate" do
   after { clear_indices }
 
   it "when matching percolators are defined should return those percolators" do
