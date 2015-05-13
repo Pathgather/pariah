@@ -3,33 +3,27 @@ module Pariah
     module Query
       def to_query
         body = {
-          query: queries,
-          filter: filters,
+          query: {
+            match_all: {}
+          }
         }
 
-        body[:sort] = @query[:sort] if @query[:sort]
+        if (filters = @query[:filters]).any?
+          body[:filter] = case filters.count
+                          when 1 then {term: filters.first}
+                          else        {and: filters.map{|w| {term: w}}}
+                          end
+        end
+
+        if sort = @query[:sort]
+          body[:sort] = sort
+        end
 
         {
           index: indices_as_string,
           type: types_as_string,
           body: body
         }
-      end
-
-      def queries
-        {
-          match_all: {}
-        }
-      end
-
-      def filters
-        filters = @query[:filters]
-
-        case filters.count
-        when 0 then { match_all: {} }
-        when 1 then {term: filters.first}
-        else        {and: filters.map{|w| {term: w}}}
-        end
       end
 
       private

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Pariah::Dataset do
-  it "with no filter should resolve to a filter that matches everything" do
-    FTS.to_query[:body][:filter].should == {match_all: {}}
+  it "with no filter have no filter param in the output" do
+    FTS.to_query[:body].has_key?(:filter).should == false
   end
 
   describe "#filter" do
@@ -24,7 +24,7 @@ describe Pariah::Dataset do
       ds1.to_query[:body][:filter].should == {term: {comments_count: 5}}
 
       ds2 = ds1.unfiltered
-      ds2.to_query[:body][:filter].should == {match_all: {}}
+      ds2.to_query[:body].has_key?(:filter).should == false
 
       ds1.to_query[:body][:filter].should == {term: {comments_count: 5}}
     end
