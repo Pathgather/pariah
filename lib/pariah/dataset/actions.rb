@@ -28,26 +28,6 @@ module Pariah
         }
       end
 
-      def add_percolator(id)
-        @client.index index: single_index,
-                      type:  '.percolator',
-                      id:    id,
-                      body: {
-                        query: queries,
-                        filter: filters
-                      }
-      end
-
-      def percolate(doc)
-        result = @client.percolate index: single_index,
-                                   type: 'what-goes-here-doesnt-matter',
-                                   body: {
-                                     doc: doc
-                                   }
-
-        result['matches'].map { |match| match['_id'] }
-      end
-
       def load
         clone.tap(&:load!)
       end
