@@ -22,14 +22,34 @@ module Pariah
       end
 
       def index(doc)
-        @client.index index: single_index,
-                      type:  single_type,
-                      id:    doc[:id],
-                      body:  doc
+        if @bulk
+          @bulk.push(
+            {
+              index: {
+                _index: single_index,
+                _type: single_type,
+                _id: doc[:id],
+                data: doc
+              }
+            }
+          )
+        else
+          @client.index index: single_index,
+                        type:  single_type,
+                        id:    doc[:id],
+                        body:  doc
+        end
       end
 
       def load!
         @results = @client.search(to_query)
+      end
+
+      def bulk
+        @bulk = []
+        yield
+        @client.bulk(body: @bulk)
+        @bulk = nil
       end
 
       private
