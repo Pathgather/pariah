@@ -24,7 +24,7 @@ module Pariah
       end
       alias :append_type :append_types
 
-      def filter(condition = {})
+      def term(condition = {})
         append_filter Filters::Term.new(condition)
       end
 

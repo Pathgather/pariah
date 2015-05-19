@@ -26,7 +26,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
 
       FTS.refresh
-      ds = FTS.from_index('pariah_test_default').filter(comments_count: 5)
+      ds = FTS.from_index('pariah_test_default').term(comments_count: 5)
       ds.results.should be_nil
 
       titles = []
@@ -42,7 +42,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
 
       FTS.refresh
-      ds = FTS.from_index('pariah_test_default').filter(comments_count: 5)
+      ds = FTS.from_index('pariah_test_default').term(comments_count: 5)
       ds.results.should be_nil
       ds.inject(0){|number, doc| number + doc['comments_count']}.should == 10
       ds.results.should be_nil
@@ -56,7 +56,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
 
       FTS.refresh
-      ds = FTS.from_index('pariah_test_default').filter(comments_count: 5)
+      ds = FTS.from_index('pariah_test_default').term(comments_count: 5)
       ds.results.should be_nil
       all = ds.all
       all.length.should == 2
@@ -72,7 +72,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
       FTS.refresh
 
-      ds = FTS.from_index('pariah_test_default').filter(comments_count: 5)
+      ds = FTS.from_index('pariah_test_default').term(comments_count: 5)
       ds.results.should be_nil
       ds.count.should == 2
       ds.results.should be_nil
@@ -85,7 +85,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 2", comments_count: 9}
       store body: {title: "Title 3", comments_count: 5}
       FTS.refresh
-      ds1 = FTS.from_index('pariah_test_default').filter(comments_count: 5)
+      ds1 = FTS.from_index('pariah_test_default').term(comments_count: 5)
       ds1.results.should be_nil
 
       ds2 = ds1.load
