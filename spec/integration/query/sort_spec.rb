@@ -5,13 +5,14 @@ describe Pariah::Dataset do
 
   describe "#sort" do
     it "should add a sort to the search" do
-      store body: {title: "A", col1: 1, col2: 3}
-      store body: {title: "B", col1: 2, col2: 3}
-      store body: {title: "C", col1: 3, col2: 2}
-      store body: {title: "D", col1: 4, col2: 2}
-      store body: {title: "E", col1: 5, col2: 1}
-      store body: {title: "F", col1: 6, col2: 1}
-      FTS.refresh
+      store_bodies [
+        {title: "A", col1: 1, col2: 3},
+        {title: "B", col1: 2, col2: 3},
+        {title: "C", col1: 3, col2: 2},
+        {title: "D", col1: 4, col2: 2},
+        {title: "E", col1: 5, col2: 1},
+        {title: "F", col1: 6, col2: 1},
+      ]
 
       FTS.sort(:col1).map{|doc| doc[:title]}.should == %w(A B C D E F)
       FTS.sort(col1: :asc).map{|doc| doc[:title]}.should == %w(A B C D E F)

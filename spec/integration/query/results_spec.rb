@@ -5,10 +5,7 @@ describe Pariah::Dataset do
 
   context "#each" do
     it "should iterate over the JSON documents matching the search" do
-      store body: {title: "Title 1"}
-      store body: {title: "Title 2"}
-
-      FTS[:pariah_test_default].refresh
+      store_bodies [{title: "Title 1"}, {title: "Title 2"}]
 
       titles = []
       FTS[:pariah_test_default].each do |doc|
@@ -21,11 +18,12 @@ describe Pariah::Dataset do
     end
 
     it "should not load the results into the dataset on which it is called" do
-      store body: {title: "Title 1", comments_count: 5}
-      store body: {title: "Title 2", comments_count: 9}
-      store body: {title: "Title 3", comments_count: 5}
+      store_bodies [
+        {title: "Title 1", comments_count: 5},
+        {title: "Title 2", comments_count: 9},
+        {title: "Title 3", comments_count: 5},
+      ]
 
-      FTS.refresh
       ds = FTS[:pariah_test_default].term(comments_count: 5)
       ds.results.should be_nil
 
@@ -37,11 +35,12 @@ describe Pariah::Dataset do
     end
 
     it "should allow for the use of Enumerable methods" do
-      store body: {title: "Title 1", comments_count: 5}
-      store body: {title: "Title 2", comments_count: 9}
-      store body: {title: "Title 3", comments_count: 5}
+      store_bodies [
+        {title: "Title 1", comments_count: 5},
+        {title: "Title 2", comments_count: 9},
+        {title: "Title 3", comments_count: 5},
+      ]
 
-      FTS.refresh
       ds = FTS[:pariah_test_default]
       ds.results.should be_nil
       ds.map{|doc| doc[:comments_count]}.sort.should == [5, 5, 9]
@@ -52,11 +51,12 @@ describe Pariah::Dataset do
 
   context "#all" do
     it "should return an array of matching documents without mutating the dataset" do
-      store body: {title: "Title 1", comments_count: 5}
-      store body: {title: "Title 2", comments_count: 9}
-      store body: {title: "Title 3", comments_count: 5}
+      store_bodies [
+        {title: "Title 1", comments_count: 5},
+        {title: "Title 2", comments_count: 9},
+        {title: "Title 3", comments_count: 5},
+      ]
 
-      FTS.refresh
       ds = FTS[:pariah_test_default].term(comments_count: 5)
       ds.results.should be_nil
 
@@ -69,10 +69,11 @@ describe Pariah::Dataset do
 
   context "#count" do
     it "should return a count of matching documents without mutating the dataset" do
-      store body: {title: "Title 1", comments_count: 5}
-      store body: {title: "Title 2", comments_count: 9}
-      store body: {title: "Title 3", comments_count: 5}
-      FTS.refresh
+      store_bodies [
+        {title: "Title 1", comments_count: 5},
+        {title: "Title 2", comments_count: 9},
+        {title: "Title 3", comments_count: 5},
+      ]
 
       ds = FTS[:pariah_test_default].term(comments_count: 5)
       ds.results.should be_nil
@@ -83,10 +84,11 @@ describe Pariah::Dataset do
 
   context "#load" do
     it "should copy the dataset and load the results into it" do
-      store body: {title: "Title 1", comments_count: 5}
-      store body: {title: "Title 2", comments_count: 9}
-      store body: {title: "Title 3", comments_count: 5}
-      FTS.refresh
+      store_bodies [
+        {title: "Title 1", comments_count: 5},
+        {title: "Title 2", comments_count: 9},
+        {title: "Title 3", comments_count: 5},
+      ]
 
       ds1 = FTS[:pariah_test_default].term(comments_count: 5)
       ds1.results.should be_nil

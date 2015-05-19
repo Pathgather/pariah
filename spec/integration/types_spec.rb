@@ -5,11 +5,12 @@ describe Pariah::Dataset do
 
   describe "#type and #types" do
     it "should specify the type(s) to be returned by the search" do
-      store type: 'type1', body: {title: "Title 1", comments_count: 1}
-      store type: 'type1', body: {title: "Title 2", comments_count: 2}
-      store type: 'type2', body: {title: "Title 3", comments_count: 3}
-      store type: 'type3', body: {title: "Title 4", comments_count: 4}
-      FTS.refresh
+      store [
+        {type: 'type1', body: {title: "Title 1", comments_count: 1}},
+        {type: 'type1', body: {title: "Title 2", comments_count: 2}},
+        {type: 'type2', body: {title: "Title 3", comments_count: 3}},
+        {type: 'type3', body: {title: "Title 4", comments_count: 4}},
+      ]
 
       ds = FTS[:pariah_test_default]
 
@@ -25,11 +26,12 @@ describe Pariah::Dataset do
 
   describe "#append_type and #append_types" do
     it "should add the indices to be searched to the current list" do
-      store type: 'type1', body: {title: "Title 1", comments_count: 1}
-      store type: 'type1', body: {title: "Title 2", comments_count: 2}
-      store type: 'type2', body: {title: "Title 3", comments_count: 3}
-      store type: 'type3', body: {title: "Title 4", comments_count: 4}
-      FTS.refresh
+      store [
+        {type: 'type1', body: {title: "Title 1", comments_count: 1}},
+        {type: 'type1', body: {title: "Title 2", comments_count: 2}},
+        {type: 'type2', body: {title: "Title 3", comments_count: 3}},
+        {type: 'type3', body: {title: "Title 4", comments_count: 4}},
+      ]
 
       ds = FTS[:pariah_test_default]
 
