@@ -11,16 +11,16 @@ describe Pariah::Dataset do
       store type: 'type3', body: {title: "Title 4", comments_count: 4}
       FTS.refresh
 
-      FTS.from_types('type1').map{|d| d[:comments_count]}.sort.should == [1, 2]
-      FTS.from_types('type1', 'type2').map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
-      FTS.from_types('type1', 'type3').map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
-      FTS.from_types('type1').from_types('type3').map{|d| d[:comments_count]}.sort.should == [4]
+      FTS.from_types(:type1).map{|d| d[:comments_count]}.sort.should == [1, 2]
+      FTS.from_types(:type1, :type2).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      FTS.from_types(:type1, :type3).map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
+      FTS.from_types(:type1).from_types(:type3).map{|d| d[:comments_count]}.sort.should == [4]
 
       # Alias.
-      FTS.from_type('type1').map{|d| d[:comments_count]}.sort.should == [1, 2]
+      FTS.from_type(:type1).map{|d| d[:comments_count]}.sort.should == [1, 2]
 
       # Array as input is fine.
-      FTS.from_types(['type1', 'type2']).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      FTS.from_types([:type1, :type2]).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
     end
   end
 
@@ -32,16 +32,16 @@ describe Pariah::Dataset do
       store type: 'type3', body: {title: "Title 4", comments_count: 4}
       FTS.refresh
 
-      FTS.append_types('type1').map{|d| d[:comments_count]}.sort.should == [1, 2]
-      FTS.append_types('type1', 'type2').map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
-      FTS.append_types('type1', 'type3').map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
-      FTS.append_types('type1').append_types('type3').map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
+      FTS.append_types(:type1).map{|d| d[:comments_count]}.sort.should == [1, 2]
+      FTS.append_types(:type1, :type2).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      FTS.append_types(:type1, :type3).map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
+      FTS.append_types(:type1).append_types(:type3).map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
 
       # Alias.
-      FTS.append_type('type1').map{|d| d[:comments_count]}.sort.should == [1, 2]
+      FTS.append_type(:type1).map{|d| d[:comments_count]}.sort.should == [1, 2]
 
       # Array as input is fine.
-      FTS.append_types(['type1', 'type2']).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      FTS.append_types([:type1, :type2]).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
     end
   end
 end
