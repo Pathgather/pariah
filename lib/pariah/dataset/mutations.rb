@@ -4,20 +4,20 @@ require 'pariah/dataset/filters/term'
 module Pariah
   class Dataset
     module Mutations
-      def from_indices(*indices)
+      def [](*indices)
         merge_replace(indices: indices.flatten)
       end
-      alias :from_index :from_indices
 
       def append_indices(*indices)
         merge_append(indices: indices.flatten)
       end
-      alias :append_index :append_indices
+      alias :append_index   :append_indices
+      alias :append_indexes :append_indices
 
-      def from_types(*types)
+      def types(*types)
         merge_replace(types: types.flatten)
       end
-      alias :from_type :from_types
+      alias :type :types
 
       def append_types(*types)
         merge_append(types: types.flatten)

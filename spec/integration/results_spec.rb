@@ -5,19 +5,19 @@ describe Pariah::Dataset do
 
   context "#each" do
     it "should iterate over the JSON documents matching the search" do
-      ds = FTS.from_index(:pariah_test_default)
+      ds = FTS[:pariah_test_default]
 
       store body: {title: "Title 1"}
       store body: {title: "Title 2"}
       ds.refresh
 
       titles = []
-      FTS.from_index(:pariah_test_default).each do |doc|
+      FTS[:pariah_test_default].each do |doc|
         titles << doc[:title]
       end
       titles.sort.should == ["Title 1", "Title 2"]
 
-      FTS.from_index(:pariah_test_default).each{|d| d}.should == FTS.from_index(:pariah_test_default).all
+      FTS[:pariah_test_default].each{|d| d}.should == FTS[:pariah_test_default].all
     end
 
     it "should not load the results into the dataset on which it is called" do
@@ -26,7 +26,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
 
       FTS.refresh
-      ds = FTS.from_index(:pariah_test_default).term(comments_count: 5)
+      ds = FTS[:pariah_test_default].term(comments_count: 5)
       ds.results.should be_nil
 
       titles = []
@@ -42,7 +42,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
 
       FTS.refresh
-      ds = FTS.from_index(:pariah_test_default).term(comments_count: 5)
+      ds = FTS[:pariah_test_default].term(comments_count: 5)
       ds.results.should be_nil
       ds.inject(0){|number, doc| number + doc[:comments_count]}.should == 10
       ds.results.should be_nil
@@ -56,7 +56,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
 
       FTS.refresh
-      ds = FTS.from_index(:pariah_test_default).term(comments_count: 5)
+      ds = FTS[:pariah_test_default].term(comments_count: 5)
       ds.results.should be_nil
       all = ds.all
       all.length.should == 2
@@ -72,7 +72,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
       FTS.refresh
 
-      ds = FTS.from_index(:pariah_test_default).term(comments_count: 5)
+      ds = FTS[:pariah_test_default].term(comments_count: 5)
       ds.results.should be_nil
       ds.count.should == 2
       ds.results.should be_nil
@@ -85,7 +85,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 2", comments_count: 9}
       store body: {title: "Title 3", comments_count: 5}
       FTS.refresh
-      ds1 = FTS.from_index(:pariah_test_default).term(comments_count: 5)
+      ds1 = FTS[:pariah_test_default].term(comments_count: 5)
       ds1.results.should be_nil
 
       ds2 = ds1.load
