@@ -13,7 +13,7 @@ describe Pariah::Dataset, "#bulk" do
       ds.index number: 4
     end
 
-    FTS.refresh
+    ds.refresh
 
     ds.map{|r| r[:number]}.sort.should == [2, 4, 5, 7]
   end

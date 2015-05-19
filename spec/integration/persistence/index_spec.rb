@@ -10,17 +10,19 @@ describe Pariah::Dataset, "#index" do
     ds.index title: "Another Doc", body: "More stupid text", number: 7
     ds.refresh
 
-    ds.term(number: 5).all.should == [{title: "My Document", body: 'Blah blah blah', number: 5}]
+    FTS[:pariah_test_my_index].type(:my_type).term(number: 5).all.should == [{title: "My Document", body: 'Blah blah blah', number: 5}]
   end
 
-  it "should raise an error if one index isn't specified" do
+  it "should raise an error if a single index isn't specified" do
     ds = FTS.type(:my_type)
+
     proc { ds.index(field: "blah") }.should raise_error RuntimeError, /Need exactly one index/
     proc { ds[:pariah_test_index1, :pariah_test_index2].index(field: "blah") }.should raise_error RuntimeError, /Need exactly one index/
   end
 
-  it "should raise an error if one type isn't specified" do
+  it "should raise an error if a single type isn't specified" do
     ds = FTS[:pariah_test_my_index]
+
     proc { ds.index(field: "blah") }.should raise_error RuntimeError, /Need exactly one type/
     proc { ds.types(:type1, :type2).index(field: "blah") }.should raise_error RuntimeError, /Need exactly one type/
   end

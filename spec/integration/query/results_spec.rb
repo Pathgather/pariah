@@ -5,11 +5,10 @@ describe Pariah::Dataset do
 
   context "#each" do
     it "should iterate over the JSON documents matching the search" do
-      ds = FTS[:pariah_test_default]
-
       store body: {title: "Title 1"}
       store body: {title: "Title 2"}
-      ds.refresh
+
+      FTS[:pariah_test_default].refresh
 
       titles = []
       FTS[:pariah_test_default].each do |doc|
@@ -17,7 +16,8 @@ describe Pariah::Dataset do
       end
       titles.sort.should == ["Title 1", "Title 2"]
 
-      FTS[:pariah_test_default].each{|d| d}.should == FTS[:pariah_test_default].all
+      # Correct return result from #each?
+      FTS[:pariah_test_default].each{|d| d}.map{|h| h[:title]}.sort.should == ["Title 1", "Title 2"]
     end
 
     it "should not load the results into the dataset on which it is called" do
@@ -42,9 +42,10 @@ describe Pariah::Dataset do
       store body: {title: "Title 3", comments_count: 5}
 
       FTS.refresh
-      ds = FTS[:pariah_test_default].term(comments_count: 5)
+      ds = FTS[:pariah_test_default]
       ds.results.should be_nil
-      ds.inject(0){|number, doc| number + doc[:comments_count]}.should == 10
+      ds.map{|doc| doc[:comments_count]}.sort.should == [5, 5, 9]
+      ds.inject(0){|number, doc| number + doc[:comments_count]}.should == 19
       ds.results.should be_nil
     end
   end
@@ -58,6 +59,7 @@ describe Pariah::Dataset do
       FTS.refresh
       ds = FTS[:pariah_test_default].term(comments_count: 5)
       ds.results.should be_nil
+
       all = ds.all
       all.length.should == 2
       all.map{|d| d[:title]}.sort.should == ["Title 1", "Title 3"]
@@ -85,6 +87,7 @@ describe Pariah::Dataset do
       store body: {title: "Title 2", comments_count: 9}
       store body: {title: "Title 3", comments_count: 5}
       FTS.refresh
+
       ds1 = FTS[:pariah_test_default].term(comments_count: 5)
       ds1.results.should be_nil
 
