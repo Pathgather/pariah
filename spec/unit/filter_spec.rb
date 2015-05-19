@@ -13,8 +13,12 @@ describe Pariah::Dataset do
       ds2 = ds1.filter(title: "The Joy of Ferrets")
       ds2.to_query[:body][:filter].should == {and: [{term: {comments_count: 5}}, {term: {title: "The Joy of Ferrets"}}]}
 
-      # Original dataset left unchanged?
+      ds3 = ds2.filter(another_column: "another value")
+      ds3.to_query[:body][:filter].should == {and: [{term: {comments_count: 5}}, {term: {title: "The Joy of Ferrets"}}, {term: {another_column: "another value"}}]}
+
+      # Original datasets left unchanged?
       ds1.to_query[:body][:filter].should == {term: {comments_count: 5}}
+      ds2.to_query[:body][:filter].should == {and: [{term: {comments_count: 5}}, {term: {title: "The Joy of Ferrets"}}]}
     end
   end
 

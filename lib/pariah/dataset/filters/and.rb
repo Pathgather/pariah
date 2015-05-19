@@ -1,13 +1,14 @@
 module Pariah
   module Filters
     class And
-      def initialize(left, right)
-        @left  = left
-        @right = right
+      attr_reader :args
+
+      def initialize(*args)
+        @args = args
       end
 
       def to_query
-        {and: [@left.to_query, @right.to_query]}
+        {and: @args.map(&:to_query)}
       end
     end
   end
