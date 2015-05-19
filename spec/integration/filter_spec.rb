@@ -11,7 +11,7 @@ describe Pariah::Dataset do
 
       titles = []
       FTS.term(comments_count: 5).each do |doc|
-        titles << doc['title']
+        titles << doc[:title]
       end
       titles.sort.should == ["Title 1"]
     end

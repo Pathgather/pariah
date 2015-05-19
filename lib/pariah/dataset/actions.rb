@@ -10,11 +10,11 @@ module Pariah
       end
 
       def all
-        with_loaded_results { |ds| ds.results['hits']['hits'].map { |hit| hit['_source'] } }
+        with_loaded_results { |ds| ds.results[:hits][:hits].map { |hit| hit[:_source] } }
       end
 
       def count
-        with_loaded_results { |ds| ds.results['hits']['total'] }
+        with_loaded_results { |ds| ds.results[:hits][:total] }
       end
 
       def load
@@ -42,7 +42,7 @@ module Pariah
       end
 
       def load!
-        @results = @client.search(to_query)
+        @results = symbolize_recursively!(@client.search(to_query))
       end
 
       def bulk
@@ -56,6 +56,20 @@ module Pariah
 
       def with_loaded_results
         yield(results ? self : load)
+      end
+
+      def symbolize_recursively!(object)
+        case object
+        when Hash
+          object.keys.each do |key|
+            object[key.to_sym] = symbolize_recursively!(object.delete(key))
+          end
+          object
+        when Array
+          object.map! { |element| symbolize_recursively!(element) }
+        else
+          object
+        end
       end
     end
   end

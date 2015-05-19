@@ -13,7 +13,7 @@ describe Pariah::Dataset do
 
       titles = []
       FTS.from_index('pariah_test_default').each do |doc|
-        titles << doc['title']
+        titles << doc[:title]
       end
       titles.sort.should == ["Title 1", "Title 2"]
 
@@ -30,7 +30,7 @@ describe Pariah::Dataset do
       ds.results.should be_nil
 
       titles = []
-      ds.each { |doc| titles << doc['title'] }
+      ds.each { |doc| titles << doc[:title] }
       titles.sort.should == ["Title 1", "Title 3"]
 
       ds.results.should be_nil
@@ -44,7 +44,7 @@ describe Pariah::Dataset do
       FTS.refresh
       ds = FTS.from_index('pariah_test_default').term(comments_count: 5)
       ds.results.should be_nil
-      ds.inject(0){|number, doc| number + doc['comments_count']}.should == 10
+      ds.inject(0){|number, doc| number + doc[:comments_count]}.should == 10
       ds.results.should be_nil
     end
   end
@@ -60,7 +60,7 @@ describe Pariah::Dataset do
       ds.results.should be_nil
       all = ds.all
       all.length.should == 2
-      all.map{|d| d['title']}.sort.should == ["Title 1", "Title 3"]
+      all.map{|d| d[:title]}.sort.should == ["Title 1", "Title 3"]
       ds.results.should be_nil
     end
   end

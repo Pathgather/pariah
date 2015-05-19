@@ -11,16 +11,16 @@ describe Pariah::Dataset do
       store index: 'pariah_test_3', body: {title: "Title 4", comments_count: 4}
       FTS.refresh
 
-      FTS.from_indices('pariah_test_1').map{|d| d['comments_count']}.sort.should == [1, 2]
-      FTS.from_indices('pariah_test_1', 'pariah_test_2').map{|d| d['comments_count']}.sort.should == [1, 2, 3]
-      FTS.from_indices('pariah_test_1', 'pariah_test_3').map{|d| d['comments_count']}.sort.should == [1, 2, 4]
-      FTS.from_indices('pariah_test_1').from_indices('pariah_test_3').map{|d| d['comments_count']}.sort.should == [4]
+      FTS.from_indices('pariah_test_1').map{|d| d[:comments_count]}.sort.should == [1, 2]
+      FTS.from_indices('pariah_test_1', 'pariah_test_2').map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      FTS.from_indices('pariah_test_1', 'pariah_test_3').map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
+      FTS.from_indices('pariah_test_1').from_indices('pariah_test_3').map{|d| d[:comments_count]}.sort.should == [4]
 
       # Alias.
-      FTS.from_index('pariah_test_1').map{|d| d['comments_count']}.sort.should == [1, 2]
+      FTS.from_index('pariah_test_1').map{|d| d[:comments_count]}.sort.should == [1, 2]
 
       # Array as input is fine.
-      FTS.from_indices(['pariah_test_1', 'pariah_test_2']).map{|d| d['comments_count']}.sort.should == [1, 2, 3]
+      FTS.from_indices(['pariah_test_1', 'pariah_test_2']).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
     end
   end
 
@@ -32,16 +32,16 @@ describe Pariah::Dataset do
       store index: 'pariah_test_3', body: {title: "Title 4", comments_count: 4}
       FTS.refresh
 
-      FTS.append_indices('pariah_test_1').map{|d| d['comments_count']}.sort.should == [1, 2]
-      FTS.append_indices('pariah_test_1', 'pariah_test_2').map{|d| d['comments_count']}.sort.should == [1, 2, 3]
-      FTS.append_indices('pariah_test_1').append_indices('pariah_test_2').map{|d| d['comments_count']}.sort.should == [1, 2, 3]
-      FTS.from_indices('pariah_test_3').append_indices('pariah_test_2').map{|d| d['comments_count']}.sort.should == [3, 4]
+      FTS.append_indices('pariah_test_1').map{|d| d[:comments_count]}.sort.should == [1, 2]
+      FTS.append_indices('pariah_test_1', 'pariah_test_2').map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      FTS.append_indices('pariah_test_1').append_indices('pariah_test_2').map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      FTS.from_indices('pariah_test_3').append_indices('pariah_test_2').map{|d| d[:comments_count]}.sort.should == [3, 4]
 
       # Alias.
-      FTS.append_index('pariah_test_1').map{|d| d['comments_count']}.sort.should == [1, 2]
+      FTS.append_index('pariah_test_1').map{|d| d[:comments_count]}.sort.should == [1, 2]
 
       # Array as input is fine.
-      FTS.append_indices(['pariah_test_1', 'pariah_test_2']).map{|d| d['comments_count']}.sort.should == [1, 2, 3]
+      FTS.append_indices(['pariah_test_1', 'pariah_test_2']).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
     end
   end
 end

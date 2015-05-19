@@ -15,6 +15,6 @@ describe Pariah::Dataset, "#bulk" do
 
     FTS.refresh
 
-    FTS.from_type('my_type').from_index('pariah_test_my_index').map{|r| r['number']}.sort.should == [2, 4, 5, 7]
+    FTS.from_type('my_type').from_index('pariah_test_my_index').map{|r| r[:number]}.sort.should == [2, 4, 5, 7]
   end
 end

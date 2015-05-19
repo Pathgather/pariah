@@ -8,7 +8,7 @@ describe Pariah::Dataset, "#index" do
     FTS.from_type('my_type').from_index('pariah_test_my_index').index title: "Another Doc", body: "More stupid text", number: 7
     FTS.refresh
 
-    FTS.from_type('my_type').from_index('pariah_test_my_index').term(number: 5).all.should == [{'title' => "My Document", 'body' => 'Blah blah blah', 'number' => 5}]
+    FTS.from_type('my_type').from_index('pariah_test_my_index').term(number: 5).all.should == [{:title => "My Document", :body => 'Blah blah blah', :number => 5}]
   end
 
   it "should raise an error if one index isn't specified" do
