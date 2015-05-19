@@ -25,7 +25,7 @@ module Pariah
       alias :append_type :append_types
 
       def term(condition = {})
-        append_filter Filters::Term.new(condition)
+        append_filters condition.map { |k, v| Filters::Term.new(k => v) }
       end
 
       def unfiltered
@@ -46,11 +46,11 @@ module Pariah
 
       protected
 
-      def append_filter(filter)
+      def append_filters(filters)
         new_filter = case current_filter = @query[:filter]
-                     when Filters::And then Filters::And.new(*current_filter.args, filter)
-                     when NilClass     then filter
-                     else                   Filters::And.new(current_filter, filter)
+                     when Filters::And then Filters::And.new(*current_filter.args, *filters)
+                     when NilClass     then filters.length > 1 ? Filters::And.new(*filters) : filters.first
+                     else                   Filters::And.new(current_filter, *filters)
                      end
 
         merge_replace filter: new_filter

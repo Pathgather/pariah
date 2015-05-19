@@ -20,6 +20,11 @@ describe Pariah::Dataset do
       ds1.to_query[:body][:filter].should == {term: {comments_count: 5}}
       ds2.to_query[:body][:filter].should == {and: [{term: {comments_count: 5}}, {term: {title: "The Joy of Ferrets"}}]}
     end
+
+    it "should support multiple terms per call" do
+      ds = FTS.term(comments_count: 5, title: "The Joy of Ferrets")
+      ds.to_query[:body][:filter].should == {and: [{term: {comments_count: 5}}, {term: {title: "The Joy of Ferrets"}}]}
+    end
   end
 
   describe "#unfiltered" do
