@@ -12,12 +12,12 @@ describe Pariah::Dataset do
       ds.refresh
 
       titles = []
-      ds.each do |doc|
+      FTS.from_index('pariah_test_default').each do |doc|
         titles << doc['title']
       end
       titles.sort.should == ["Title 1", "Title 2"]
 
-      ds.each{|d| d}.should == ds.all
+      FTS.from_index('pariah_test_default').each{|d| d}.should == FTS.from_index('pariah_test_default').all
     end
 
     it "should not load the results into the dataset on which it is called" do
