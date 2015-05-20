@@ -24,6 +24,23 @@ module Pariah
           body[:from] = from
         end
 
+        include_fields = @query[:include_fields]
+        exclude_fields = @query[:exclude_fields]
+
+        if (include_fields && include_fields.any?) || (exclude_fields && exclude_fields.any?)
+          source = {}
+
+          if include_fields && include_fields.any?
+            source[:include] = include_fields
+          end
+
+          if exclude_fields && exclude_fields.any?
+            source[:exclude] = exclude_fields
+          end
+
+          body[:_source] = source
+        end
+
         if (aggregates = @query[:aggregates]) && aggregates.any?
           hash = {}
           aggregates.each { |field| hash[field] = { terms: { field: field } } }

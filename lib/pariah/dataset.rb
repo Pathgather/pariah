@@ -16,6 +16,7 @@ module Pariah
         indices:    [],
         types:      [],
         aggregates: [],
+        fields:     [],
         filter:     nil,
         size:       nil,
         from:       nil,

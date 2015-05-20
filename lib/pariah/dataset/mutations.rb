@@ -54,6 +54,26 @@ module Pariah
       end
       alias :append_aggregate :append_aggregates
 
+      def fields(*fields)
+        merge_replace(include_fields: fields)
+      end
+      alias :field :fields
+
+      def append_fields(*fields)
+        merge_append(include_fields: fields)
+      end
+      alias :append_field :append_fields
+
+      def exclude_fields(*fields)
+        merge_replace(exclude_fields: fields)
+      end
+      alias :exclude_field :exclude_fields
+
+      def append_exclude_fields(*fields)
+        merge_append(exclude_fields: fields)
+      end
+      alias :append_exclude_field :append_exclude_fields
+
       protected
 
       def append_filters(filters)
