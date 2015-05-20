@@ -13,11 +13,12 @@ module Pariah
 
     def initialize(url_or_client)
       @query = {
-        indices: [],
-        types:   [],
-        filter:  nil,
-        size:    nil,
-        from:    nil,
+        indices:    [],
+        types:      [],
+        aggregates: [],
+        filter:     nil,
+        size:       nil,
+        from:       nil,
       }
 
       @client = if url_or_client.is_a?(Elasticsearch::Transport::Client)

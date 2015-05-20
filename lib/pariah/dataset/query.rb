@@ -24,6 +24,12 @@ module Pariah
           body[:from] = from
         end
 
+        if (aggregates = @query[:aggregates]) && aggregates.any?
+          hash = {}
+          aggregates.each { |field| hash[field] = { terms: { field: field } } }
+          body[:aggs] = hash
+        end
+
         {
           index: indices_as_string,
           type: types_as_string,

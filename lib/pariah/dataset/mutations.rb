@@ -44,6 +44,16 @@ module Pariah
         merge_replace(from: from)
       end
 
+      def aggregates(*aggregates)
+        merge_replace(aggregates: aggregates)
+      end
+      alias :aggregate :aggregates
+
+      def append_aggregates(*aggregates)
+        merge_append(aggregates: aggregates)
+      end
+      alias :append_aggregate :append_aggregates
+
       protected
 
       def append_filters(filters)

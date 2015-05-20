@@ -13,6 +13,10 @@ module Pariah
         with_loaded_results { |ds| ds.results[:hits][:hits].map { |hit| hit[:_source] } }
       end
 
+      def aggregates
+        with_loaded_results { |ds| ds.results[:aggregations] }
+      end
+
       def count
         with_loaded_results { |ds| ds.results[:hits][:total] }
       end
