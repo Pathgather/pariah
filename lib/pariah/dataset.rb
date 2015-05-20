@@ -12,15 +12,7 @@ module Pariah
     attr_reader :client, :query, :results
 
     def initialize(url_or_client)
-      @query = {
-        indices:    [],
-        types:      [],
-        aggregates: [],
-        fields:     [],
-        filter:     nil,
-        size:       nil,
-        from:       nil,
-      }
+      @query = {}
 
       @client = if url_or_client.is_a?(Elasticsearch::Transport::Client)
                   url_or_client

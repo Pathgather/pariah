@@ -27,21 +27,21 @@ module Pariah
         include_fields = @query[:include_fields]
         exclude_fields = @query[:exclude_fields]
 
-        if (include_fields && include_fields.any?) || (exclude_fields && exclude_fields.any?)
+        if include_fields || exclude_fields
           source = {}
 
-          if include_fields && include_fields.any?
+          if include_fields
             source[:include] = include_fields
           end
 
-          if exclude_fields && exclude_fields.any?
+          if exclude_fields
             source[:exclude] = exclude_fields
           end
 
           body[:_source] = source
         end
 
-        if (aggregates = @query[:aggregates]) && aggregates.any?
+        if aggregates = @query[:aggregates]
           hash = {}
           aggregates.each { |field| hash[field] = { terms: { field: field } } }
           body[:aggs] = hash
@@ -58,26 +58,27 @@ module Pariah
 
       def single_index
         indices = @query[:indices]
-        raise "Need exactly one index; have #{indices.inspect}" unless indices.count == 1
+        raise "Need exactly one index; have #{indices.inspect}" unless indices && indices.count == 1
         indices.first
       end
 
       def single_type
         types = @query[:types]
-        raise "Need exactly one type; have #{types.inspect}" unless types.count == 1
+        raise "Need exactly one type; have #{types.inspect}" unless types && types.count == 1
         types.first
       end
 
       def indices_as_string
-        if (indices = @query[:indices]).empty?
-          '_all'
-        else
+        if indices = @query[:indices]
           indices.join(',')
+        else
+          :_all
         end
       end
 
       def types_as_string
-        @query[:types].join(',')
+        types = @query[:types]
+        types ? types.join(',') : ''
       end
     end
   end
