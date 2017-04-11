@@ -10,20 +10,27 @@ describe Pariah::Dataset, "#index" do
     ds.index title: "Another Doc", body: "More stupid text", number: 7
     ds.refresh
 
-    FTS[:pariah_test_my_index].type(:my_type).term(number: 5).all.should == [{title: "My Document", body: 'Blah blah blah', number: 5}]
+    assert_equal [{title: "My Document", body: 'Blah blah blah', number: 5}],
+      FTS[:pariah_test_my_index].type(:my_type).term(number: 5).all
   end
 
   it "should raise an error if a single index isn't specified" do
     ds = FTS.type(:my_type)
 
-    proc { ds.index(field: "blah") }.should raise_error RuntimeError, /Need exactly one index/
-    proc { ds[:pariah_test_index1, :pariah_test_index2].index(field: "blah") }.should raise_error RuntimeError, /Need exactly one index/
+    error = assert_raises(RuntimeError) { ds.index(field: "blah") }
+    assert_match(/Need exactly one index/, error.message)
+
+    error = assert_raises(RuntimeError) { ds[:pariah_test_index1, :pariah_test_index2].index(field: "blah") }
+    assert_match(/Need exactly one index/, error.message)
   end
 
   it "should raise an error if a single type isn't specified" do
     ds = FTS[:pariah_test_my_index]
 
-    proc { ds.index(field: "blah") }.should raise_error RuntimeError, /Need exactly one type/
-    proc { ds.types(:type1, :type2).index(field: "blah") }.should raise_error RuntimeError, /Need exactly one type/
+    error = assert_raises(RuntimeError) { ds.index(field: "blah") }
+    assert_match(/Need exactly one type/, error.message)
+
+    error = assert_raises(RuntimeError) { ds.types(:type1, :type2).index(field: "blah") }
+    assert_match(/Need exactly one type/, error.message)
   end
 end

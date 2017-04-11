@@ -14,13 +14,13 @@ describe Pariah::Dataset do
 
       ds = FTS[:pariah_test_default]
 
-      ds.type(:type1).map{|d| d[:comments_count]}.sort.should == [1, 2]
-      ds.types(:type1, :type2).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
-      ds.types(:type1, :type3).map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
-      ds.type(:type1).type(:type3).map{|d| d[:comments_count]}.sort.should == [4]
+      assert_equal [1, 2], ds.type(:type1).map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 3], ds.types(:type1, :type2).map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 4], ds.types(:type1, :type3).map{|d| d[:comments_count]}.sort
+      assert_equal [4], ds.type(:type1).type(:type3).map{|d| d[:comments_count]}.sort
 
       # Array as input is fine.
-      FTS.types([:type1, :type2]).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      assert_equal [1, 2, 3], FTS.types([:type1, :type2]).map{|d| d[:comments_count]}.sort
     end
   end
 
@@ -35,13 +35,13 @@ describe Pariah::Dataset do
 
       ds = FTS[:pariah_test_default]
 
-      ds.append_type(:type1).map{|d| d[:comments_count]}.sort.should == [1, 2]
-      ds.append_types(:type1, :type2).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
-      ds.append_types(:type1, :type3).map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
-      ds.type(:type1).append_type(:type3).map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
+      assert_equal [1, 2], ds.append_type(:type1).map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 3], ds.append_types(:type1, :type2).map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 4], ds.append_types(:type1, :type3).map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 4], ds.type(:type1).append_type(:type3).map{|d| d[:comments_count]}.sort
 
       # Array as input is fine.
-      ds.append_types([:type1, :type2]).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      assert_equal [1, 2, 3], ds.append_types([:type1, :type2]).map{|d| d[:comments_count]}.sort
     end
   end
 end

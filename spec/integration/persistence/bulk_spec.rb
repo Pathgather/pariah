@@ -15,6 +15,6 @@ describe Pariah::Dataset, "#bulk" do
 
     ds.refresh
 
-    ds.map{|r| r[:number]}.sort.should == [2, 4, 5, 7]
+    assert_equal [2, 4, 5, 7], ds.map{|r| r[:number]}.sort
   end
 end

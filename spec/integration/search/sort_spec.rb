@@ -14,13 +14,13 @@ describe Pariah::Dataset do
         {title: "F", col1: 6, col2: 1},
       ]
 
-      FTS.sort(:col1).map{|doc| doc[:title]}.should == %w(A B C D E F)
-      FTS.sort(col1: :asc).map{|doc| doc[:title]}.should == %w(A B C D E F)
-      FTS.sort(col1: :desc).map{|doc| doc[:title]}.should == %w(F E D C B A)
-      FTS.sort(:col2, :col1).map{|doc| doc[:title]}.should == %w(E F C D A B)
-      FTS.sort(:col2, col1: :desc).map{|doc| doc[:title]}.should == %w(F E D C B A)
-      FTS.sort(col2: :asc, col1: :desc).map{|doc| doc[:title]}.should == %w(F E D C B A)
-      FTS.sort(col1: :asc, col2: :asc).map{|doc| doc[:title]}.should == %w(A B C D E F)
+      assert_equal %w(A B C D E F), FTS.sort(:col1).map{|doc| doc[:title]}
+      assert_equal %w(A B C D E F), FTS.sort(col1: :asc).map{|doc| doc[:title]}
+      assert_equal %w(F E D C B A), FTS.sort(col1: :desc).map{|doc| doc[:title]}
+      assert_equal %w(E F C D A B), FTS.sort(:col2, :col1).map{|doc| doc[:title]}
+      assert_equal %w(F E D C B A), FTS.sort(:col2, col1: :desc).map{|doc| doc[:title]}
+      assert_equal %w(F E D C B A), FTS.sort(col2: :asc, col1: :desc).map{|doc| doc[:title]}
+      assert_equal %w(A B C D E F), FTS.sort(col1: :asc, col2: :asc).map{|doc| doc[:title]}
     end
   end
 end

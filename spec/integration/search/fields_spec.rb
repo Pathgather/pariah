@@ -12,7 +12,7 @@ describe Pariah::Dataset do
     @ds = FTS[:pariah_test_default]
   end
 
-  context "#fields" do
+  describe "#fields" do
     it "should select the fields to be returned" do
       datasets = [
         @ds.fields(:title, :comments_count),
@@ -21,10 +21,12 @@ describe Pariah::Dataset do
       ]
 
       datasets.each do |dataset|
-        dataset.all.sort_by{|r| r[:comments_count]}.should == [
-          {title: "Title 1", comments_count: 24},
-          {title: "Title 2", comments_count: 67},
-        ]
+        assert_equal \
+          [
+            {title: "Title 1", comments_count: 24},
+            {title: "Title 2", comments_count: 67},
+          ],
+          dataset.all.sort_by{|r| r[:comments_count]}
       end
     end
 
@@ -36,15 +38,17 @@ describe Pariah::Dataset do
       ]
 
       datasets.each do |dataset|
-        dataset.all.sort_by{|r| r[:title]}.should == [
-          {title: "Title 1", other_a: 'string1', other_b: 'string3'},
-          {title: "Title 2", other_a: 'string2', other_b: 'string4'},
-        ]
+        assert_equal \
+          [
+            {title: "Title 1", other_a: 'string1', other_b: 'string3'},
+            {title: "Title 2", other_a: 'string2', other_b: 'string4'},
+          ],
+          dataset.all.sort_by{|r| r[:title]}
       end
     end
   end
 
-  context "#exclude_fields" do
+  describe "#exclude_fields" do
     it "should exclude the given fields" do
       datasets = [
         @ds.exclude_fields(:title, :other_a, :other_b),
@@ -54,24 +58,26 @@ describe Pariah::Dataset do
       datasets.each do |dataset|
         results = dataset.all
 
-        results.map{|r| r[:comments_count]}.sort.should == [24, 67]
+        assert_equal [24, 67], results.map{|r| r[:comments_count]}.sort
 
         results.each do |r|
-          r.keys.include?(:title).should be false
-          r.keys.include?(:other_a).should be false
-          r.keys.include?(:other_b).should be false
+          keys = r.keys
+          refute_includes keys, :title
+          refute_includes keys, :other_a
+          refute_includes keys, :other_b
         end
       end
     end
 
     it "with wildcards should exclude matching fields" do
       results = @ds.exclude_fields(:title, 'other_*').all
-      results.map{|r| r[:comments_count]}.sort.should == [24, 67]
+      assert_equal [24, 67], results.map{|r| r[:comments_count]}.sort
 
       results.each do |r|
-        r.keys.include?(:title).should be false
-        r.keys.include?(:other_a).should be false
-        r.keys.include?(:other_b).should be false
+        keys = r.keys
+        refute_includes keys, :title
+        refute_includes keys, :other_a
+        refute_includes keys, :other_b
       end
     end
   end

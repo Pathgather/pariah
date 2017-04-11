@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Pariah::Dataset do
   after { clear_indices }
 
-  context "#each" do
+  describe "#each" do
     it "should iterate over the JSON documents matching the search" do
       store_bodies [{title: "Title 1"}, {title: "Title 2"}]
 
@@ -11,10 +11,10 @@ describe Pariah::Dataset do
       FTS[:pariah_test_default].each do |doc|
         titles << doc[:title]
       end
-      titles.sort.should == ["Title 1", "Title 2"]
+      assert_equal ["Title 1", "Title 2"], titles.sort
 
       # Correct return result from #each?
-      FTS[:pariah_test_default].each{|d| d}.map{|h| h[:title]}.sort.should == ["Title 1", "Title 2"]
+      assert_equal ["Title 1", "Title 2"], FTS[:pariah_test_default].each{|d| d}.map{|h| h[:title]}.sort
     end
 
     it "should not load the results into the dataset on which it is called" do
@@ -25,13 +25,13 @@ describe Pariah::Dataset do
       ]
 
       ds = FTS[:pariah_test_default].term(comments_count: 5)
-      ds.results.should be_nil
+      assert_nil ds.results
 
       titles = []
       ds.each { |doc| titles << doc[:title] }
-      titles.sort.should == ["Title 1", "Title 3"]
+      assert_equal ["Title 1", "Title 3"], titles.sort
 
-      ds.results.should be_nil
+      assert_nil ds.results
     end
 
     it "should allow for the use of Enumerable methods" do
@@ -42,14 +42,14 @@ describe Pariah::Dataset do
       ]
 
       ds = FTS[:pariah_test_default]
-      ds.results.should be_nil
-      ds.map{|doc| doc[:comments_count]}.sort.should == [5, 5, 9]
-      ds.inject(0){|number, doc| number + doc[:comments_count]}.should == 19
-      ds.results.should be_nil
+      assert_nil ds.results
+      assert_equal [5, 5, 9], ds.map{|doc| doc[:comments_count]}.sort
+      assert_equal 19, ds.inject(0){|number, doc| number + doc[:comments_count]}
+      assert_nil ds.results
     end
   end
 
-  context "#all" do
+  describe "#all" do
     it "should return an array of matching documents without mutating the dataset" do
       store_bodies [
         {title: "Title 1", comments_count: 5},
@@ -58,16 +58,17 @@ describe Pariah::Dataset do
       ]
 
       ds = FTS[:pariah_test_default].term(comments_count: 5)
-      ds.results.should be_nil
+      assert_nil ds.results
 
       all = ds.all
-      all.length.should == 2
-      all.map{|d| d[:title]}.sort.should == ["Title 1", "Title 3"]
-      ds.results.should be_nil
+      assert_equal 2, all.length
+      assert_equal ["Title 1", "Title 3"], all.map{|d| d[:title]}.sort
+
+      assert_nil ds.results
     end
   end
 
-  context "#count" do
+  describe "#count" do
     it "should return a count of matching documents without mutating the dataset" do
       store_bodies [
         {title: "Title 1", comments_count: 5},
@@ -76,13 +77,13 @@ describe Pariah::Dataset do
       ]
 
       ds = FTS[:pariah_test_default].term(comments_count: 5)
-      ds.results.should be_nil
-      ds.count.should == 2
-      ds.results.should be_nil
+      assert_nil ds.results
+      assert_equal 2, ds.count
+      assert_nil ds.results
     end
   end
 
-  context "#load" do
+  describe "#load" do
     it "should copy the dataset and load the results into it" do
       store_bodies [
         {title: "Title 1", comments_count: 5},
@@ -91,15 +92,15 @@ describe Pariah::Dataset do
       ]
 
       ds1 = FTS[:pariah_test_default].term(comments_count: 5)
-      ds1.results.should be_nil
+      assert_nil ds1.results
 
       ds2 = ds1.load
-      ds2.results.should_not be_nil
+      refute_nil ds2.results
 
-      ds2.count.should == 2
-      ds2.all.length.should == 2
+      assert_equal 2, ds2.count
+      assert_equal 2, ds2.all.length
 
-      ds1.results.should be_nil
+      assert_nil ds1.results
     end
   end
 end

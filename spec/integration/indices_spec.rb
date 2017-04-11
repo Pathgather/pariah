@@ -12,13 +12,13 @@ describe Pariah::Dataset do
         {index: :pariah_test_3, body: {title: "Title 4", comments_count: 4}},
       ]
 
-      FTS[:pariah_test_1].map{|d| d[:comments_count]}.sort.should == [1, 2]
-      FTS[:pariah_test_1, :pariah_test_2].map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
-      FTS[:pariah_test_1, :pariah_test_3].map{|d| d[:comments_count]}.sort.should == [1, 2, 4]
-      FTS[:pariah_test_1][:pariah_test_3].map{|d| d[:comments_count]}.sort.should == [4]
+      assert_equal [1, 2], FTS[:pariah_test_1].map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 3], FTS[:pariah_test_1, :pariah_test_2].map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 4], FTS[:pariah_test_1, :pariah_test_3].map{|d| d[:comments_count]}.sort
+      assert_equal [4], FTS[:pariah_test_1][:pariah_test_3].map{|d| d[:comments_count]}.sort
 
       # Array as input is fine.
-      FTS[[:pariah_test_1, :pariah_test_2]].map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      assert_equal [1, 2, 3], FTS[[:pariah_test_1, :pariah_test_2]].map{|d| d[:comments_count]}.sort
     end
   end
 
@@ -31,15 +31,15 @@ describe Pariah::Dataset do
         {index: :pariah_test_3, body: {title: "Title 4", comments_count: 4}},
       ]
 
-      FTS.append_index(:pariah_test_1).map{|d| d[:comments_count]}.sort.should == [1, 2]
-      FTS.append_indices(:pariah_test_1, :pariah_test_2).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
-      FTS.append_indexes(:pariah_test_1, :pariah_test_2).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      assert_equal [1, 2], FTS.append_index(:pariah_test_1).map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 3], FTS.append_indices(:pariah_test_1, :pariah_test_2).map{|d| d[:comments_count]}.sort
+      assert_equal [1, 2, 3], FTS.append_indexes(:pariah_test_1, :pariah_test_2).map{|d| d[:comments_count]}.sort
 
-      FTS.append_index(:pariah_test_1).append_index(:pariah_test_2).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
-      FTS[:pariah_test_3].append_index(:pariah_test_2).map{|d| d[:comments_count]}.sort.should == [3, 4]
+      assert_equal [1, 2, 3], FTS.append_index(:pariah_test_1).append_index(:pariah_test_2).map{|d| d[:comments_count]}.sort
+      assert_equal [3, 4], FTS[:pariah_test_3].append_index(:pariah_test_2).map{|d| d[:comments_count]}.sort
 
       # Array as input is fine.
-      FTS.append_indices([:pariah_test_1, :pariah_test_2]).map{|d| d[:comments_count]}.sort.should == [1, 2, 3]
+      assert_equal [1, 2, 3], FTS.append_indices([:pariah_test_1, :pariah_test_2]).map{|d| d[:comments_count]}.sort
     end
   end
 end

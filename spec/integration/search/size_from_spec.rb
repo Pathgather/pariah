@@ -16,9 +16,9 @@ describe Pariah::Dataset do
 
       FTS.refresh
       ds = FTS.sort(:col1)
-      ds.map{|doc| doc[:title]}.should == %w(A B C D E F)
-      ds.size(3).map{|doc| doc[:title]}.should == %w(A B C)
-      ds.size(3).from(2).map{|doc| doc[:title]}.should == %w(C D E)
+      assert_equal %w(A B C D E F), ds.map{|doc| doc[:title]}
+      assert_equal %w(A B C), ds.size(3).map{|doc| doc[:title]}
+      assert_equal %w(C D E), ds.size(3).from(2).map{|doc| doc[:title]}
     end
   end
 end

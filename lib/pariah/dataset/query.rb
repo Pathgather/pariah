@@ -2,15 +2,21 @@ module Pariah
   class Dataset
     module Query
       def to_query
-        body = {
-          query: {
+        bool_query = {
+          must: {
             match_all: {}
           }
         }
 
         if filter = @query[:filter]
-          body[:filter] = filter.to_query
+          bool_query[:filter] = filter.to_query
         end
+
+        body = {
+          query: {
+            bool: bool_query
+          }
+        }
 
         if sort = @query[:sort]
           body[:sort] = sort
