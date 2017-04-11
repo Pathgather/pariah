@@ -80,7 +80,16 @@ module Pariah
 
       def indices_as_string
         if indices = @query[:indices]
-          indices.join(',')
+          resolved =
+            indices.map do |index|
+              if index.respond_to?(:call)
+                index.call
+              else
+                index
+              end
+            end
+
+          resolved.join(',')
         else
           :_all
         end
