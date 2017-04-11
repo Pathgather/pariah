@@ -14,7 +14,8 @@ describe Pariah::Dataset do
       assert_equal ["Title 1", "Title 2"], titles.sort
 
       # Correct return result from #each?
-      assert_equal ["Title 1", "Title 2"], FTS[:pariah_test_default].each{|d| d}.map{|h| h[:title]}.sort
+      assert_equal ["Title 1", "Title 2"],
+        FTS[:pariah_test_default].each{|d| d}.map{|h| h[:title]}.sort
     end
 
     it "should not load the results into the dataset on which it is called" do

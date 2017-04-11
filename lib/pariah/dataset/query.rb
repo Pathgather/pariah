@@ -64,13 +64,17 @@ module Pariah
 
       def single_index
         indices = @query[:indices]
-        raise "Need exactly one index; have #{indices.inspect}" unless indices && indices.count == 1
+        unless indices && indices.count == 1
+          raise "Need exactly one index; have #{indices.inspect}"
+        end
         indices.first
       end
 
       def single_type
         types = @query[:types]
-        raise "Need exactly one type; have #{types.inspect}" unless types && types.count == 1
+        unless types && types.count == 1
+          raise "Need exactly one type; have #{types.inspect}"
+        end
         types.first
       end
 

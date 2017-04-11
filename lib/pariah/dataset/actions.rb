@@ -10,7 +10,11 @@ module Pariah
       end
 
       def all
-        with_loaded_results { |ds| ds.results[:hits][:hits].map { |hit| hit[:fields] || hit[:_source] } }
+        with_loaded_results do |ds|
+          ds.results[:hits][:hits].map do |hit|
+            hit[:fields] || hit[:_source]
+          end
+        end
       end
 
       def aggregates

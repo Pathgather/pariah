@@ -77,11 +77,15 @@ module Pariah
       protected
 
       def append_filters(filters)
-        new_filter = case current_filter = @query[:filter]
-                     when Filters::And then Filters::And.new(*current_filter.args, *filters)
-                     when NilClass     then filters.length > 1 ? Filters::And.new(*filters) : filters.first
-                     else                   Filters::And.new(current_filter, *filters)
-                     end
+        new_filter =
+          case current_filter = @query[:filter]
+          when Filters::And
+            Filters::And.new(*current_filter.args, *filters)
+          when NilClass
+            filters.length > 1 ? Filters::And.new(*filters) : filters.first
+          else
+            Filters::And.new(current_filter, *filters)
+          end
 
         merge_replace filter: new_filter
       end
@@ -100,8 +104,7 @@ module Pariah
 
       def merge_append!(query)
         @query = @query.merge(query) do |key, oldval, newval|
-          newval = [newval] unless newval.is_a?(Array)
-          oldval + newval
+          oldval + Array(newval)
         end
       end
     end
