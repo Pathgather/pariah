@@ -12,14 +12,6 @@ describe Pariah::Dataset, "#index" do
 
     assert_equal [{title: "My Document", body: 'Blah blah blah', number: 5}],
       FTS[:pariah_test_my_index].type(:my_type).term(number: 5).all
-
-    # It's ok to specify an index as a string...
-    assert_equal [{title: "My Document", body: 'Blah blah blah', number: 5}],
-      FTS['pariah_test_my_index'].type(:my_type).term(number: 5).all
-
-    # ...or as a callable.
-    assert_equal [{title: "My Document", body: 'Blah blah blah', number: 5}],
-      FTS[->{'pariah_test_my_index'}].type(:my_type).term(number: 5).all
   end
 
   it "should raise an error if a single index isn't specified" do
