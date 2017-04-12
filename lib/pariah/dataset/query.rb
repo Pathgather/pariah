@@ -60,8 +60,20 @@ module Pariah
 
       private
 
+      def resolve_indices
+        if indices = @query[:indices]
+          indices.flat_map do |index|
+            if index.respond_to?(:call)
+              index.call
+            else
+              index
+            end
+          end
+        end
+      end
+
       def single_index
-        indices = @query[:indices]
+        indices = resolve_indices
         unless indices && indices.count == 1
           raise "Need exactly one index; have #{indices.inspect}"
         end
@@ -77,7 +89,7 @@ module Pariah
       end
 
       def indices_as_string
-        if indices = @query[:indices]
+        if indices = resolve_indices
           indices.join(',')
         else
           :_all
