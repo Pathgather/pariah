@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pariah/dataset/mutations'
 require 'pariah/dataset/actions'
 require 'pariah/dataset/query'

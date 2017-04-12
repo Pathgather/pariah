@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pariah/dataset/filters/and'
 require 'pariah/dataset/filters/term'
 
