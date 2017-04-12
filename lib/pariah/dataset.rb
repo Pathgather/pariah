@@ -28,6 +28,18 @@ module Pariah
       synchronize do |conn|
         r = conn.get(path: '_cluster/health')
         raise "Bad Elasticsearch connection!" unless r.status == 200
+
+        conn.put \
+          path: '_template/template_all',
+          body: JSON.dump(
+            {
+              template: '*',
+              order: 0,
+              settings: {
+                'index.mapper.dynamic' => false
+              }
+            }
+          )
       end
     end
 

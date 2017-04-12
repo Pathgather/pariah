@@ -9,20 +9,6 @@ FTS = Pariah.connect('http://localhost:9200')
 require 'minitest/autorun'
 require 'minitest/pride'
 
-FTS.synchronize do |conn|
-  conn.put \
-    path: '_template/template_all',
-    body: JSON.dump(
-      {
-        template: '*',
-        order: 0,
-        settings: {
-          'index.mapper.dynamic' => false
-        }
-      }
-    )
-end
-
 TestIndex =
   FTS[:pariah_test_default].
     set_index_schema(
