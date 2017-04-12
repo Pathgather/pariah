@@ -13,7 +13,7 @@ describe Pariah::Dataset, "#aggregate" do
 
     assert_equal(
       {a: {terms: {field: :a}}, b: {terms: {field: :b}}},
-      ds.to_query[:body][:aggs],
+      ds.to_query[:aggs],
     )
   end
 end

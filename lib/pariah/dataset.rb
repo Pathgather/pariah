@@ -11,17 +11,30 @@ module Pariah
     include Actions
     include Query
 
-    attr_reader :client, :query, :results
+    attr_reader :query, :results
 
-    def initialize(url_or_client)
-      @bulk   = nil
-      @query  = {}
-      @client =
-        if url_or_client.is_a?(Elasticsearch::Transport::Client)
-          url_or_client
-        else
-          Elasticsearch::Client.new(url: url_or_client)
+    def initialize(url)
+      @bulk  = nil
+      @query = {}
+
+      @pool =
+        Pond.new do
+          Excon.new(
+            url,
+            persistent: true,
+            headers: { 'Content-Type' => 'application/json' }
+          )
         end
+
+      # Ensure that the connection is good.
+      synchronize do |conn|
+        r = conn.get(path: '_cluster/health')
+        raise "Bad Elasticsearch connection!" unless r.status == 200
+      end
+    end
+
+    def synchronize(&block)
+      @pool.checkout(&block)
     end
   end
 end

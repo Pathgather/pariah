@@ -4,7 +4,7 @@ require 'pariah'
 require 'faker'
 require 'pry'
 
-FTS = Pariah.connect
+FTS = Pariah.connect('http://localhost:9200')
 
 require 'minitest/autorun'
 require 'minitest/pride'
@@ -13,7 +13,7 @@ class PariahSpec < Minitest::Spec
   register_spec_type(//, self)
 
   def assert_filter(ds, expected)
-    actual = ds.to_query[:body][:query][:bool][:filter]
+    actual = ds.to_query[:query][:bool][:filter]
     if expected.nil?
       assert_nil expected
     else
@@ -21,34 +21,50 @@ class PariahSpec < Minitest::Spec
     end
   end
 
-  def store(hashes)
-    hashes = [hashes] unless hashes.is_a?(Array)
-    merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+  def store(records)
+    rows = []
 
-    hashes.each do |hash|
-      full_doc = {
-        index: :pariah_test_default,
-        type: :pariah_test,
-        body: {
-          title: Faker::Lorem.sentence,
-          body: Faker::Lorem.paragraph,
-          tags: Faker::Lorem.words(3),
-          published: rand > 0.5,
-          comments_count: rand(50),
-        },
-      }
+    records.each do |record|
+      i = record[:index] || :pariah_test_default
+      t = record[:type]  || :pariah_test
 
-      FTS.client.index(full_doc.merge(hash, &merger))
+      rows << JSON.dump(index: {_index: i, _type: t})
+      rows << JSON.dump(record[:body])
+    end
+
+    body = rows.join("\n") << "\n"
+
+    FTS.synchronize do |conn|
+      conn.post \
+        path: '_bulk',
+        body: body
     end
 
     FTS.refresh
   end
 
   def store_bodies(bodies)
-    store bodies.map { |body| {body: body} }
+    hashes = [hashes] unless hashes.is_a?(Array)
+
+    records =
+      bodies.map do |body|
+        {
+          title: Faker::Lorem.sentence,
+          body: Faker::Lorem.paragraph,
+          tags: Faker::Lorem.words(3),
+          published: rand > 0.5,
+          comments_count: rand(50),
+        }.merge(body)
+      end
+
+    FTS[:pariah_test_default].type(:pariah_test).bulk_index(records)
+    FTS[:pariah_test_default].refresh
   end
 
   def clear_indices
-    FTS.client.indices.delete index: 'pariah_test_*'
+    FTS.synchronize do |conn|
+      conn.delete(path: 'pariah_test_*')
+      conn.put(path: 'pariah_test_default')
+    end
   end
 end

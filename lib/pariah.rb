@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-require 'elasticsearch'
+require 'json'
+require 'excon'
+require 'pond'
 
 require 'pariah/dataset'
 require 'pariah/version'
 
 module Pariah
   class << self
-    def connect(url_or_client = nil)
-      Dataset.new(url_or_client)
+    def connect(url)
+      Dataset.new(url)
     end
   end
 end

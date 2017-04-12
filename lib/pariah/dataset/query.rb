@@ -55,11 +55,7 @@ module Pariah
           body[:aggs] = hash
         end
 
-        {
-          index: indices_as_string,
-          type: types_as_string,
-          body: body
-        }
+        body
       end
 
       private

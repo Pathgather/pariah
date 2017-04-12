@@ -4,7 +4,9 @@ module Pariah
   class Dataset
     module Actions
       def refresh
-        @client.indices.refresh index: indices_as_string
+        synchronize do |conn|
+          conn.post path: [indices_as_string, '_refresh'].join('/')
+        end
       end
 
       def each(&block)
@@ -32,34 +34,43 @@ module Pariah
       end
 
       def index(doc)
-        if @bulk
-          @bulk.push(
-            {
-              index: {
-                _index: single_index,
-                _type: single_type,
-                _id: doc[:id],
-                data: doc
-              }
-            }
-          )
-        else
-          @client.index index: single_index,
-                        type:  single_type,
-                        id:    doc[:id],
-                        body:  doc
+        synchronize do |conn|
+          conn.post \
+            path: [single_index, single_type].join('/'),
+            body: JSON.dump(doc)
         end
       end
 
       def load!
-        @results = symbolize_recursively!(@client.search(to_query))
+        response =
+          synchronize do |conn|
+            conn.post \
+              path: [indices_as_string, types_as_string, '_search'].join('/'),
+              body: JSON.dump(to_query)
+          end
+
+        unless response.status == 200
+          raise "Bad response! #{response.inspect}"
+        end
+
+        @results = JSON.parse(response.body, symbolize_names: true)
       end
 
-      def bulk
-        @bulk = []
-        yield
-        @client.bulk(body: @bulk)
-        @bulk = nil
+      def bulk_index(records)
+        rows = []
+
+        records.each do |record|
+          rows << JSON.dump(index: {})
+          rows << JSON.dump(record)
+        end
+
+        body = rows.join("\n") << "\n"
+
+        synchronize do |conn|
+          conn.post \
+            path: [single_index, single_type, '_bulk'].join('/'),
+            body: body
+        end
       end
 
       private
