@@ -10,7 +10,7 @@ module Pariah
           }
         }
 
-        if filter = @query[:filter]
+        if filter = @opts[:filter]
           bool_query[:filter] = filter.to_query
         end
 
@@ -20,20 +20,20 @@ module Pariah
           }
         }
 
-        if sort = @query[:sort]
+        if sort = @opts[:sort]
           body[:sort] = sort
         end
 
-        if size = @query[:size]
+        if size = @opts[:size]
           body[:size] = size
         end
 
-        if from = @query[:from]
+        if from = @opts[:from]
           body[:from] = from
         end
 
-        include_fields = @query[:include_fields]
-        exclude_fields = @query[:exclude_fields]
+        include_fields = @opts[:include_fields]
+        exclude_fields = @opts[:exclude_fields]
 
         if include_fields || exclude_fields
           source = {}
@@ -49,7 +49,7 @@ module Pariah
           body[:_source] = source
         end
 
-        if aggregates = @query[:aggregates]
+        if aggregates = @opts[:aggregates]
           hash = {}
           aggregates.each { |field| hash[field] = { terms: { field: field } } }
           body[:aggs] = hash
@@ -61,7 +61,7 @@ module Pariah
       private
 
       def resolve_indices
-        if indices = @query[:indices]
+        if indices = @opts[:indices]
           indices.flat_map do |index|
             if index.respond_to?(:call)
               index.call
@@ -81,7 +81,7 @@ module Pariah
       end
 
       def single_type
-        types = @query[:types]
+        types = @opts[:types]
         unless types && types.count == 1
           raise "Need exactly one type; have #{types.inspect}"
         end
@@ -97,7 +97,7 @@ module Pariah
       end
 
       def types_as_string
-        types = @query[:types]
+        types = @opts[:types]
         types ? types.join(',') : ''
       end
     end

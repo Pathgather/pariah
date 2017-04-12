@@ -80,7 +80,7 @@ module Pariah
 
       def append_filters(filters)
         new_filter =
-          case current_filter = @query[:filter]
+          case current_filter = @opts[:filter]
           when Filters::And
             Filters::And.new(*current_filter.args, *filters)
           when NilClass
@@ -92,20 +92,20 @@ module Pariah
         merge_replace filter: new_filter
       end
 
-      def merge_replace(query)
-        clone.tap { |clone| clone.merge_replace!(query) }
+      def merge_replace(opts)
+        clone.tap { |clone| clone.merge_replace!(opts) }
       end
 
-      def merge_append(query)
-        clone.tap { |clone| clone.merge_append!(query) }
+      def merge_append(opts)
+        clone.tap { |clone| clone.merge_append!(opts) }
       end
 
-      def merge_replace!(query)
-        @query = @query.merge(query)
+      def merge_replace!(opts)
+        @opts = @opts.merge(opts)
       end
 
-      def merge_append!(query)
-        @query = @query.merge(query) do |key, oldval, newval|
+      def merge_append!(opts)
+        @opts = @opts.merge(opts) do |key, oldval, newval|
           oldval + Array(newval)
         end
       end

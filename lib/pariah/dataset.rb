@@ -11,12 +11,10 @@ module Pariah
     include Actions
     include Query
 
-    attr_reader :query, :results
+    attr_reader :opts, :results
 
     def initialize(url)
-      @bulk  = nil
-      @query = {}
-
+      @opts = {}
       @pool =
         Pond.new do
           Excon.new(
