@@ -9,6 +9,28 @@ FTS = Pariah.connect('http://localhost:9200')
 require 'minitest/autorun'
 require 'minitest/pride'
 
+TestIndex =
+  FTS[:pariah_test_default].
+    set_index_schema(
+      settings: {
+        index: {
+          number_of_shards: 1,
+          number_of_replicas: 0,
+        }
+      },
+      mappings: {
+        pariah_test: {
+          properties: {
+            title:          {type: 'text'},
+            body:           {type: 'text'},
+            tags:           {type: 'text'},
+            published:      {type: 'boolean'},
+            comments_count: {type: 'integer'},
+          }
+        }
+      }
+    )
+
 class PariahSpec < Minitest::Spec
   register_spec_type(//, self)
 
@@ -64,7 +86,7 @@ class PariahSpec < Minitest::Spec
   def clear_indices
     FTS.synchronize do |conn|
       conn.delete(path: 'pariah_test_*')
-      conn.put(path: 'pariah_test_default')
+      TestIndex.create_index
     end
   end
 end

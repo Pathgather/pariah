@@ -9,6 +9,15 @@ module Pariah
         end
       end
 
+      def create_index
+        raise "No index_schema specified!" unless s = @opts[:index_schema]
+        synchronize do |conn|
+          conn.put \
+            path: single_index,
+            body: JSON.dump(s)
+        end
+      end
+
       def each(&block)
         with_loaded_results { |ds| ds.all.each(&block) }
       end

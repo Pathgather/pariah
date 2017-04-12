@@ -76,6 +76,10 @@ module Pariah
       end
       alias :append_exclude_field :append_exclude_fields
 
+      def set_index_schema(schema)
+        merge_replace(index_schema: schema)
+      end
+
       protected
 
       def append_filters(filters)

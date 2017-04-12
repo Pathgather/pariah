@@ -77,7 +77,7 @@ module Pariah
         unless indices && indices.count == 1
           raise "Need exactly one index; have #{indices.inspect}"
         end
-        indices.first
+        indices.first.to_s
       end
 
       def single_type
