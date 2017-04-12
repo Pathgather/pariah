@@ -18,6 +18,13 @@ module Pariah
         end
       end
 
+      def drop_index
+        synchronize do |conn|
+          conn.delete \
+            path: indices_as_string
+        end
+      end
+
       def each(&block)
         with_loaded_results { |ds| ds.all.each(&block) }
       end

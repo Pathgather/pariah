@@ -4,6 +4,10 @@ require 'spec_helper'
 
 describe Pariah::Dataset do
   before do
+    TestIndex[:pariah_test_1].create_index
+    TestIndex[:pariah_test_2].create_index
+    TestIndex[:pariah_test_3].create_index
+
     store [
       {index: :pariah_test_1, body: {title: "Title 1", comments_count: 1}},
       {index: :pariah_test_1, body: {title: "Title 2", comments_count: 2}},

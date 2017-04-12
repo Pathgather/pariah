@@ -6,18 +6,18 @@ describe Pariah::Dataset, "#index" do
   after { clear_indices }
 
   it "should persist the given document in the given type and index" do
-    ds = FTS[:pariah_test_my_index].type(:my_type)
+    ds = TestIndex.type(:pariah_test)
 
-    ds.index title: "My Document", body: "Blah blah blah",   number: 5
-    ds.index title: "Another Doc", body: "More stupid text", number: 7
+    ds.index title: "My Document", body: "Blah blah blah",   comments_count: 5
+    ds.index title: "Another Doc", body: "More stupid text", comments_count: 7
     ds.refresh
 
-    assert_equal [{title: "My Document", body: 'Blah blah blah', number: 5}],
-      FTS[:pariah_test_my_index].type(:my_type).term(number: 5).all
+    assert_equal [{title: "My Document", body: 'Blah blah blah', comments_count: 5}],
+      TestIndex.type(:pariah_test).term(comments_count: 5).all
   end
 
   it "should raise an error if a single index isn't specified" do
-    ds = FTS.type(:my_type)
+    ds = FTS.type(:pariah_test)
 
     error = assert_raises(RuntimeError) { ds.index(field: "blah") }
     assert_match(/Need exactly one index/, error.message)
@@ -27,7 +27,7 @@ describe Pariah::Dataset, "#index" do
   end
 
   it "should raise an error if a single type isn't specified" do
-    ds = FTS[:pariah_test_my_index]
+    ds = FTS[:pariah_test_index]
 
     error = assert_raises(RuntimeError) { ds.index(field: "blah") }
     assert_match(/Need exactly one type/, error.message)

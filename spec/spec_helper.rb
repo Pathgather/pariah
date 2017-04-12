@@ -9,6 +9,20 @@ FTS = Pariah.connect('http://localhost:9200')
 require 'minitest/autorun'
 require 'minitest/pride'
 
+FTS.synchronize do |conn|
+  conn.put \
+    path: '_template/template_all',
+    body: JSON.dump(
+      {
+        template: '*',
+        order: 0,
+        settings: {
+          'index.mapper.dynamic' => false
+        }
+      }
+    )
+end
+
 TestIndex =
   FTS[:pariah_test_default].
     set_index_schema(
@@ -23,13 +37,26 @@ TestIndex =
           properties: {
             title:          {type: 'text'},
             body:           {type: 'text'},
-            tags:           {type: 'text'},
+            topic:          {type: 'keyword'},
+            tags:           {type: 'keyword'},
             published:      {type: 'boolean'},
             comments_count: {type: 'integer'},
           }
-        }
+        },
+        pariah_test_2: {
+          properties: {
+            title:          {type: 'text'},
+            body:           {type: 'text'},
+            topic:          {type: 'keyword'},
+            tags:           {type: 'keyword'},
+            published:      {type: 'boolean'},
+            comments_count: {type: 'integer'},
+          }
+        },
       }
     )
+
+TestIndex.create_index
 
 class PariahSpec < Minitest::Spec
   register_spec_type(//, self)
@@ -73,6 +100,7 @@ class PariahSpec < Minitest::Spec
         {
           title: Faker::Lorem.sentence,
           body: Faker::Lorem.paragraph,
+          topic: Faker::Lorem.word,
           tags: Faker::Lorem.words(3),
           published: rand > 0.5,
           comments_count: rand(50),
@@ -84,9 +112,8 @@ class PariahSpec < Minitest::Spec
   end
 
   def clear_indices
-    FTS.synchronize do |conn|
-      conn.delete(path: 'pariah_test_*')
-      TestIndex.create_index
-    end
+    FTS['pariah_test_*'].drop_index
+    TestIndex.create_index
+    FTS.refresh
   end
 end
