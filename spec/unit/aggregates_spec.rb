@@ -3,11 +3,6 @@
 require 'spec_helper'
 
 describe Pariah::Dataset, "#aggregate" do
-  def teardown
-    super
-    clear_indices
-  end
-
   it "specifies a list of fields to aggregate on" do
     ds = FTS[:pariah_test_default].aggregate(:a, :b)
 
