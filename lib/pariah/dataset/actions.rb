@@ -63,15 +63,6 @@ module Pariah
         )
       end
 
-      def load!
-        @results =
-          execute_request(
-            method: :post,
-            path: [indices_as_string, types_as_string, '_search'],
-            body: to_query,
-          )
-      end
-
       def bulk_index(records)
         rows = []
 
@@ -87,6 +78,17 @@ module Pariah
           path: [single_index, single_type, '_bulk'],
           body: body,
         )
+      end
+
+      protected
+
+      def load!
+        @results =
+          execute_request(
+            method: :post,
+            path: [indices_as_string, types_as_string, '_search'],
+            body: to_query,
+          )
       end
 
       private
