@@ -42,7 +42,7 @@ module Pariah
         end
       end
 
-      def aggregates
+      def aggregate_results
         with_loaded_results { |ds| ds.results[:aggregations] }
       end
 

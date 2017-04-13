@@ -19,7 +19,7 @@ describe Pariah::Dataset do
       datasets = [
         @ds.fields(:title, :comments_count),
         @ds.append_fields(:title, :comments_count),
-        @ds.field(:title).append_field(:comments_count),
+        @ds.fields(:title).append_fields(:comments_count),
       ]
 
       datasets.each do |dataset|
@@ -36,7 +36,7 @@ describe Pariah::Dataset do
       datasets = [
         @ds.fields(:title, 'other_*'),
         @ds.append_fields(:title, 'other_*'),
-        @ds.field(:title).append_field('other_*'),
+        @ds.fields(:title).append_fields('other_*'),
       ]
 
       datasets.each do |dataset|
@@ -54,7 +54,6 @@ describe Pariah::Dataset do
     it "should exclude the given fields" do
       datasets = [
         @ds.exclude_fields(:title, :other_a, :other_b),
-        @ds.exclude_field(:title).append_exclude_fields(:other_a, :other_b),
       ]
 
       datasets.each do |dataset|

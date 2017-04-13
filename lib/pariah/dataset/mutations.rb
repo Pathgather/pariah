@@ -49,32 +49,18 @@ module Pariah
       def aggregates(*aggregates)
         merge_replace(aggregates: aggregates)
       end
-      alias :aggregate :aggregates
-
-      def append_aggregates(*aggregates)
-        merge_append(aggregates: aggregates)
-      end
-      alias :append_aggregate :append_aggregates
 
       def fields(*fields)
         merge_replace(include_fields: fields)
       end
-      alias :field :fields
 
       def append_fields(*fields)
         merge_append(include_fields: fields)
       end
-      alias :append_field :append_fields
 
       def exclude_fields(*fields)
         merge_replace(exclude_fields: fields)
       end
-      alias :exclude_field :exclude_fields
-
-      def append_exclude_fields(*fields)
-        merge_append(exclude_fields: fields)
-      end
-      alias :append_exclude_field :append_exclude_fields
 
       def set_index_schema(schema)
         merge_replace(index_schema: schema)
