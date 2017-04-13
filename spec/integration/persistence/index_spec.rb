@@ -53,4 +53,30 @@ describe Pariah::Dataset, "#index" do
       ["Title #1", "Title #2 \n Some more stuff"],
       ds.map{|r| r[:title]}.sort
   end
+
+  it "should respect a specific type field" do
+    ds = FTS[:pariah_test_default]
+
+    ds.type(:pariah_test).index([
+      {comments_count: 5},
+      {comments_count: 7, type: :pariah_test_2},
+    ])
+
+    ds.refresh
+    assert_equal [5], ds.type(:pariah_test).  map{|r| r[:comments_count]}.sort
+    assert_equal [7], ds.type(:pariah_test_2).map{|r| r[:comments_count]}.sort
+  end
+
+  it "should respect a specific index field" do
+    TestIndex[:pariah_test_2].create_index
+
+    FTS[:pariah_test_default].type(:pariah_test).index([
+      {comments_count: 5},
+      {comments_count: 7, index: :pariah_test_2},
+    ])
+
+    FTS.refresh
+    assert_equal [5], FTS[:pariah_test_default].type(:pariah_test).map{|r| r[:comments_count]}.sort
+    assert_equal [7], FTS[:pariah_test_2].type(:pariah_test).map{|r| r[:comments_count]}.sort
+  end
 end

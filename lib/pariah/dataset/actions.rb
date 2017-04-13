@@ -62,10 +62,26 @@ module Pariah
         records = records.compact
         return if records.empty?
 
+        current_type = nil
         rows = []
 
         records.each do |record|
-          rows << JSON.dump(index: {})
+          metadata = {}
+
+          if i = record.delete(:index)
+            metadata[:_index] = i
+          end
+
+          if t = record.delete(:type)
+            metadata[:_type] = t
+          elsif i
+            # We're sending the record to a different index, so we need to
+            # make sure we specify the type.
+            current_type ||= single_type
+            metadata[:_type] = current_type
+          end
+
+          rows << JSON.dump(index: metadata)
           rows << JSON.dump(record)
         end
 
