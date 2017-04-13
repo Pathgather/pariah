@@ -54,15 +54,6 @@ module Pariah
         clone.tap(&:load!)
       end
 
-      def index(doc)
-        execute_request(
-          method: :post,
-          path: [single_index, single_type],
-          body: doc,
-          allowed_codes: [201],
-        )
-      end
-
       def bulk_index(records)
         rows = []
 
