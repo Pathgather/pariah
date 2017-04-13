@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'pariah'
+
 require 'faker'
+require 'securerandom'
 require 'pry'
 
 FTS = Pariah.connect('http://localhost:9200')
@@ -23,6 +25,7 @@ TestIndex =
       mappings: {
         pariah_type_1: {
           properties: {
+            id:             {type: 'keyword'},
             title:          {type: 'text'},
             body:           {type: 'text'},
             topic:          {type: 'keyword'},
@@ -33,6 +36,7 @@ TestIndex =
         },
         pariah_type_2: {
           properties: {
+            id:             {type: 'keyword'},
             title:          {type: 'text'},
             body:           {type: 'text'},
             topic:          {type: 'keyword'},
@@ -64,6 +68,7 @@ class PariahSpec < Minitest::Spec
     records =
       records.map do |record|
         {
+          id: SecureRandom.uuid,
           title: Faker::Lorem.sentence,
           body: Faker::Lorem.paragraph,
           topic: Faker::Lorem.word,
