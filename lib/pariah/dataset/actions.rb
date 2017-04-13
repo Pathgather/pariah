@@ -4,25 +4,30 @@ module Pariah
   class Dataset
     module Actions
       def refresh
-        synchronize do |conn|
-          conn.post path: [indices_as_string, '_refresh'].join('/')
-        end
+        execute_request(
+          method: :post,
+          path: [indices_as_string, '_refresh'],
+        )
       end
 
       def create_index
-        raise "No index_schema specified!" unless s = @opts[:index_schema]
-        synchronize do |conn|
-          conn.put \
-            path: single_index,
-            body: JSON.dump(s)
+        unless schema = @opts[:index_schema]
+          raise Error, "No index_schema specified!"
         end
+
+        execute_request(
+          method: :put,
+          path: single_index,
+          body: schema,
+          allowed_codes: [200, 400], # Index may already exist.
+        )
       end
 
       def drop_index
-        synchronize do |conn|
-          conn.delete \
-            path: indices_as_string
-        end
+        execute_request(
+          method: :delete,
+          path: indices_as_string,
+        )
       end
 
       def each(&block)
@@ -50,26 +55,21 @@ module Pariah
       end
 
       def index(doc)
-        synchronize do |conn|
-          conn.post \
-            path: [single_index, single_type].join('/'),
-            body: JSON.dump(doc)
-        end
+        execute_request(
+          method: :post,
+          path: [single_index, single_type],
+          body: doc,
+          allowed_codes: [201],
+        )
       end
 
       def load!
-        response =
-          synchronize do |conn|
-            conn.post \
-              path: [indices_as_string, types_as_string, '_search'].join('/'),
-              body: JSON.dump(to_query)
-          end
-
-        unless response.status == 200
-          raise "Bad response! #{response.inspect}"
-        end
-
-        @results = JSON.parse(response.body, symbolize_names: true)
+        @results =
+          execute_request(
+            method: :post,
+            path: [indices_as_string, types_as_string, '_search'],
+            body: to_query,
+          )
       end
 
       def bulk_index(records)
@@ -82,31 +82,17 @@ module Pariah
 
         body = rows.join("\n") << "\n"
 
-        synchronize do |conn|
-          conn.post \
-            path: [single_index, single_type, '_bulk'].join('/'),
-            body: body
-        end
+        execute_request(
+          method: :post,
+          path: [single_index, single_type, '_bulk'],
+          body: body,
+        )
       end
 
       private
 
       def with_loaded_results
         yield(results ? self : load)
-      end
-
-      def symbolize_recursively!(object)
-        case object
-        when Hash
-          object.keys.each do |key|
-            object[key.to_sym] = symbolize_recursively!(object.delete(key))
-          end
-          object
-        when Array
-          object.map! { |element| symbolize_recursively!(element) }
-        else
-          object
-        end
       end
     end
   end

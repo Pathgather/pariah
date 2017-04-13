@@ -20,34 +20,70 @@ module Pariah
           Excon.new(
             url,
             persistent: true,
-            headers: { 'Content-Type' => 'application/json' }
           )
         end
 
-      # Ensure that the connection is good.
       synchronize do |conn|
-        r = conn.get(path: '_cluster/health')
-        raise "Bad Elasticsearch connection!" unless r.status == 200
+        # Ensure that the connection is good.
+        execute_request(method: :get, path: '_cluster/health')
 
-        r =
-          conn.put \
-            path: '_template/template_all',
-            body: JSON.dump(
-              {
-                template: '*',
-                order: 0,
-                settings: {
-                  'index.mapper.dynamic' => false
-                }
-              }
-            )
-
-        raise "Bad Elasticsearch response!: #{r.body}" unless r.status == 200
+        # Make sure that any indexes we create have sensible defaults.
+        execute_request(
+          method: :put,
+          path: '_template/template_all',
+          body: {
+            template: '*',
+            order: 0,
+            settings: {
+              'index.mapper.dynamic' => false
+            }
+          }
+        )
       end
     end
 
     def synchronize(&block)
       @pool.checkout(&block)
+    end
+
+    DEFAULT_ALLOWED_CODES = [200]
+
+    def execute_request(
+      method:,
+      path:,
+      body: nil,
+      allowed_codes: DEFAULT_ALLOWED_CODES
+    )
+      path =
+        case path
+        when Array  then path.compact.join('/')
+        when String then path
+        else raise Error, "unsupported path argument: #{path.inspect}"
+        end
+
+      body =
+        case body
+        when Hash, Array      then JSON.dump(body)
+        when NilClass, String then body
+        else raise Error, "unsupported body argument: #{body.inspect}"
+        end
+
+      opts = {
+        path: path,
+        headers: {'Content-Type' => 'application/json'},
+      }
+
+      opts[:body] = body if body
+
+      synchronize do |conn|
+        response = conn.send(method, opts)
+
+        unless allowed_codes.include?(response.status)
+          raise Error, "unexpected Elasticsearch response: #{response.inspect}"
+        end
+
+        JSON.parse(response.body, symbolize_names: true)
+      end
     end
   end
 end
