@@ -93,7 +93,7 @@ class PariahSpec < Minitest::Spec
         }.merge(body)
       end
 
-    FTS[:pariah_test_default].type(:pariah_test).bulk_index(records)
+    FTS[:pariah_test_default].type(:pariah_test).index(records)
     FTS[:pariah_test_default].refresh
   end
 

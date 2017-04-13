@@ -54,7 +54,7 @@ module Pariah
         clone.tap(&:load!)
       end
 
-      def bulk_index(records)
+      def index(records)
         rows = []
 
         records.each do |record|
