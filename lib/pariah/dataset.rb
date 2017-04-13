@@ -29,17 +29,20 @@ module Pariah
         r = conn.get(path: '_cluster/health')
         raise "Bad Elasticsearch connection!" unless r.status == 200
 
-        conn.put \
-          path: '_template/template_all',
-          body: JSON.dump(
-            {
-              template: '*',
-              order: 0,
-              settings: {
-                'index.mapper.dynamic' => false
+        r =
+          conn.put \
+            path: '_template/template_all',
+            body: JSON.dump(
+              {
+                template: '*',
+                order: 0,
+                settings: {
+                  'index.mapper.dynamic' => false
+                }
               }
-            }
-          )
+            )
+
+        raise "Bad Elasticsearch response!: #{r.body}" unless r.status == 200
       end
     end
 
