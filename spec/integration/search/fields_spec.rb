@@ -11,7 +11,7 @@ describe Pariah::Dataset do
       {title: "Title 2", comments_count: 67, other_a: 'string2', other_b: 'string4'},
     ]
 
-    @ds = FTS[:pariah_test_default]
+    @ds = FTS[:pariah_index_1]
   end
 
   describe "#fields" do

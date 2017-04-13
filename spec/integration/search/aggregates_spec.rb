@@ -23,7 +23,7 @@ describe Pariah::Dataset do
     it "specifies a list of fields to aggregate on" do
       skip
 
-      ds = FTS[:pariah_test_default]
+      ds = FTS[:pariah_index_1]
       results = ds.aggregate(:category, :user_name, :company).load
 
       categories = results.aggregates[:category][:buckets]

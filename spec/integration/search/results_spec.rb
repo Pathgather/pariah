@@ -16,18 +16,18 @@ describe Pariah::Dataset do
   describe "#each" do
     it "should iterate over the JSON documents matching the search" do
       titles = []
-      FTS[:pariah_test_default].each do |doc|
+      FTS[:pariah_index_1].each do |doc|
         titles << doc[:title]
       end
       assert_equal ["Title 1", "Title 2", "Title 3"], titles.sort
 
       # Correct return result from #each?
       assert_equal ["Title 1", "Title 2", "Title 3"],
-        FTS[:pariah_test_default].each{|d| d}.map{|h| h[:title]}.sort
+        FTS[:pariah_index_1].each{|d| d}.map{|h| h[:title]}.sort
     end
 
     it "should not load the results into the dataset on which it is called" do
-      ds = FTS[:pariah_test_default].term(comments_count: 5)
+      ds = FTS[:pariah_index_1].term(comments_count: 5)
       assert_nil ds.results
 
       titles = []
@@ -38,7 +38,7 @@ describe Pariah::Dataset do
     end
 
     it "should allow for the use of Enumerable methods" do
-      ds = FTS[:pariah_test_default]
+      ds = FTS[:pariah_index_1]
       assert_nil ds.results
       assert_equal [5, 5, 9], ds.map{|doc| doc[:comments_count]}.sort
       assert_equal 19, ds.inject(0){|number, doc| number + doc[:comments_count]}
@@ -48,7 +48,7 @@ describe Pariah::Dataset do
 
   describe "#all" do
     it "should return an array of matching documents without mutating the dataset" do
-      ds = FTS[:pariah_test_default].term(comments_count: 5)
+      ds = FTS[:pariah_index_1].term(comments_count: 5)
       assert_nil ds.results
 
       all = ds.all
@@ -61,7 +61,7 @@ describe Pariah::Dataset do
 
   describe "#count" do
     it "should return a count of matching documents without mutating the dataset" do
-      ds = FTS[:pariah_test_default].term(comments_count: 5)
+      ds = FTS[:pariah_index_1].term(comments_count: 5)
       assert_nil ds.results
       assert_equal 2, ds.count
       assert_nil ds.results
@@ -70,7 +70,7 @@ describe Pariah::Dataset do
 
   describe "#load" do
     it "should copy the dataset and load the results into it" do
-      ds1 = FTS[:pariah_test_default].term(comments_count: 5)
+      ds1 = FTS[:pariah_index_1].term(comments_count: 5)
       assert_nil ds1.results
 
       ds2 = ds1.load

@@ -6,7 +6,7 @@ describe Pariah::Dataset, "#upsert" do
   after { clear_indices }
 
   it "should support indexing a single document" do
-    ds = FTS[:pariah_test_default].type(:pariah_test)
+    ds = FTS[:pariah_index_1].type(:pariah_type_1)
 
     ds.upsert({comments_count: 6})
     ds.refresh
@@ -15,7 +15,7 @@ describe Pariah::Dataset, "#upsert" do
   end
 
   it "should simply return on an empty input" do
-    ds = FTS[:pariah_test_default].type(:pariah_test)
+    ds = FTS[:pariah_index_1].type(:pariah_type_1)
 
     assert_nil ds.upsert([])
     assert_equal [], ds.map{|r| r[:comments_count]}.sort
@@ -25,7 +25,7 @@ describe Pariah::Dataset, "#upsert" do
   end
 
   it "should support indexing many documents at once" do
-    ds = FTS[:pariah_test_default].type(:pariah_test)
+    ds = FTS[:pariah_index_1].type(:pariah_type_1)
 
     ds.upsert([
       {comments_count: 5},
@@ -40,7 +40,7 @@ describe Pariah::Dataset, "#upsert" do
   end
 
   it "should not fail when indexing a doc that has a newline in it" do
-    ds = FTS[:pariah_test_default].type(:pariah_test)
+    ds = FTS[:pariah_index_1].type(:pariah_type_1)
 
     ds.upsert([
       {title: "Title #1"},
@@ -55,28 +55,26 @@ describe Pariah::Dataset, "#upsert" do
   end
 
   it "should respect a specific type field" do
-    ds = FTS[:pariah_test_default]
+    ds = FTS[:pariah_index_1]
 
-    ds.type(:pariah_test).upsert([
+    ds.type(:pariah_type_1).upsert([
       {comments_count: 5},
-      {comments_count: 7, type: :pariah_test_2},
+      {comments_count: 7, type: :pariah_type_2},
     ])
 
     ds.refresh
-    assert_equal [5], ds.type(:pariah_test).  map{|r| r[:comments_count]}.sort
-    assert_equal [7], ds.type(:pariah_test_2).map{|r| r[:comments_count]}.sort
+    assert_equal [5], ds.type(:pariah_type_1).map{|r| r[:comments_count]}.sort
+    assert_equal [7], ds.type(:pariah_type_2).map{|r| r[:comments_count]}.sort
   end
 
   it "should respect a specific index field" do
-    TestIndex[:pariah_test_2].create_index
-
-    FTS[:pariah_test_default].type(:pariah_test).upsert([
+    FTS[:pariah_index_1].type(:pariah_type_1).upsert([
       {comments_count: 5},
-      {comments_count: 7, index: :pariah_test_2},
+      {comments_count: 7, index: :pariah_index_2},
     ])
 
     FTS.refresh
-    assert_equal [5], FTS[:pariah_test_default].type(:pariah_test).map{|r| r[:comments_count]}.sort
-    assert_equal [7], FTS[:pariah_test_2].type(:pariah_test).map{|r| r[:comments_count]}.sort
+    assert_equal [5], FTS[:pariah_index_1].type(:pariah_type_1).map{|r| r[:comments_count]}.sort
+    assert_equal [7], FTS[:pariah_index_2].type(:pariah_type_1).map{|r| r[:comments_count]}.sort
   end
 end

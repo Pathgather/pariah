@@ -9,8 +9,10 @@ FTS = Pariah.connect('http://localhost:9200')
 require 'minitest/autorun'
 require 'minitest/pride'
 
+FTS['pariah_*'].drop_index
+
 TestIndex =
-  FTS[:pariah_test_default].
+  FTS[:pariah_index_1].
     set_index_schema(
       settings: {
         index: {
@@ -19,7 +21,7 @@ TestIndex =
         }
       },
       mappings: {
-        pariah_test: {
+        pariah_type_1: {
           properties: {
             title:          {type: 'text'},
             body:           {type: 'text'},
@@ -29,7 +31,7 @@ TestIndex =
             comments_count: {type: 'integer'},
           }
         },
-        pariah_test_2: {
+        pariah_type_2: {
           properties: {
             title:          {type: 'text'},
             body:           {type: 'text'},
@@ -71,13 +73,14 @@ class PariahSpec < Minitest::Spec
         }.merge(record)
       end
 
-    FTS[:pariah_test_default].type(:pariah_test).upsert(records)
+    FTS[:pariah_index_1].type(:pariah_type_1).upsert(records)
     FTS.refresh
   end
 
   def clear_indices
-    FTS['pariah_test_*'].drop_index
+    FTS['pariah_index_*'].drop_index
     TestIndex.create_index
+    TestIndex[:pariah_index_2].create_index
     FTS.refresh
   end
 end
