@@ -55,6 +55,13 @@ module Pariah
       end
 
       def index(records)
+        unless records.is_a?(Array)
+          records = [records]
+        end
+
+        records = records.compact
+        return if records.empty?
+
         rows = []
 
         records.each do |record|
