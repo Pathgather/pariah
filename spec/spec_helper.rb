@@ -79,7 +79,7 @@ class PariahSpec < Minitest::Spec
   end
 
   def store_bodies(bodies)
-    hashes = [hashes] unless hashes.is_a?(Array)
+    bodies = [bodies] unless bodies.is_a?(Array)
 
     records =
       bodies.map do |body|
@@ -93,7 +93,7 @@ class PariahSpec < Minitest::Spec
         }.merge(body)
       end
 
-    FTS[:pariah_test_default].type(:pariah_test).index(records)
+    FTS[:pariah_test_default].type(:pariah_test).upsert(records)
     FTS[:pariah_test_default].refresh
   end
 

@@ -54,7 +54,7 @@ module Pariah
         clone.tap(&:load!)
       end
 
-      def index(records)
+      def upsert(records)
         unless records.is_a?(Array)
           records = [records]
         end
