@@ -7,7 +7,7 @@ describe Pariah::Dataset do
 
   describe "#size and #from" do
     it "should add those arguments to the search" do
-      store_bodies [
+      store [
         {title: "A", col1: 1},
         {title: "B", col1: 2},
         {title: "C", col1: 3},

@@ -7,7 +7,7 @@ describe Pariah::Dataset do
 
   describe "#sort" do
     it "should add a sort to the search" do
-      store_bodies [
+      store [
         {title: "A", col1: 1, col2: 3},
         {title: "B", col1: 2, col2: 3},
         {title: "C", col1: 3, col2: 2},

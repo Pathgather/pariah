@@ -9,10 +9,10 @@ describe Pariah::Dataset do
     TestIndex[:pariah_test_3].create_index
 
     store [
-      {index: :pariah_test_1, body: {title: "Title 1", comments_count: 1}},
-      {index: :pariah_test_1, body: {title: "Title 2", comments_count: 2}},
-      {index: :pariah_test_2, body: {title: "Title 3", comments_count: 3}},
-      {index: :pariah_test_3, body: {title: "Title 4", comments_count: 4}},
+      {index: :pariah_test_1, title: "Title 1", comments_count: 1},
+      {index: :pariah_test_1, title: "Title 2", comments_count: 2},
+      {index: :pariah_test_2, title: "Title 3", comments_count: 3},
+      {index: :pariah_test_3, title: "Title 4", comments_count: 4},
     ]
   end
 

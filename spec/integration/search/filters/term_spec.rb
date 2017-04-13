@@ -7,7 +7,7 @@ describe Pariah::Dataset do
 
   describe "#term" do
     it "should add a term filter to the search" do
-      store_bodies [
+      store [
         {title: "Title 1", comments_count: 5},
         {title: "Title 2", comments_count: 9},
       ]

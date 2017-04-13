@@ -6,7 +6,7 @@ describe Pariah::Dataset do
   after { clear_indices }
 
   before do
-    store_bodies [
+    store [
       {title: "Title 1", comments_count: 24, other_a: 'string1', other_b: 'string3'},
       {title: "Title 2", comments_count: 67, other_a: 'string2', other_b: 'string4'},
     ]

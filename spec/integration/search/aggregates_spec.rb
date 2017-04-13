@@ -11,7 +11,7 @@ describe Pariah::Dataset do
       @user_names = ["Elyse Doyle Jr.", "Keely Simonis III", "Estevan Sipes", "Lisa Kris", "Leora Kris"]
       @companies  = ["Dietrich-Quitzon", "Schoen-Kunze", "Hudson Inc", "Toy-Bergnaum", "Predovic Inc"]
 
-      store_bodies 100.times.map {
+      store 100.times.map {
         {
           category:  @categories.sample,
           user_name: @user_names.sample,

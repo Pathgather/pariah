@@ -57,32 +57,10 @@ class PariahSpec < Minitest::Spec
   end
 
   def store(records)
-    rows = []
-
-    records.each do |record|
-      i = record[:index] || :pariah_test_default
-      t = record[:type]  || :pariah_test
-
-      rows << JSON.dump(index: {_index: i, _type: t})
-      rows << JSON.dump(record[:body])
-    end
-
-    body = rows.join("\n") << "\n"
-
-    FTS.synchronize do |conn|
-      conn.post \
-        path: '_bulk',
-        body: body
-    end
-
-    FTS.refresh
-  end
-
-  def store_bodies(bodies)
-    bodies = [bodies] unless bodies.is_a?(Array)
+    records = [records] unless records.is_a?(Array)
 
     records =
-      bodies.map do |body|
+      records.map do |record|
         {
           title: Faker::Lorem.sentence,
           body: Faker::Lorem.paragraph,
@@ -90,11 +68,11 @@ class PariahSpec < Minitest::Spec
           tags: Faker::Lorem.words(3),
           published: rand > 0.5,
           comments_count: rand(50),
-        }.merge(body)
+        }.merge(record)
       end
 
     FTS[:pariah_test_default].type(:pariah_test).upsert(records)
-    FTS[:pariah_test_default].refresh
+    FTS.refresh
   end
 
   def clear_indices
