@@ -63,8 +63,8 @@ module Pariah
 
       body =
         case body
-        when Hash, Array      then JSON.dump(body)
-        when NilClass, String then body
+        when Hash,   Array    then JSON.dump(body)
+        when String, NilClass then body
         else raise Error, "unsupported body argument: #{body.inspect}"
         end
 
