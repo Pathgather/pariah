@@ -14,6 +14,20 @@ describe Pariah::Dataset, "#upsert" do
     assert_equal [6], ds.map{|r| r[:comments_count]}.sort
   end
 
+  it "when documents have an id should use it as the record id" do
+    ds = FTS[:pariah_index_1].type(:pariah_type_1)
+
+    id = SecureRandom.uuid
+
+    ds.upsert({id: id, comments_count: 6})
+    ds.refresh
+
+    results = ds.load.results
+    hits = results[:hits][:hits]
+    assert_equal 1, hits.length
+    assert_equal id, hits.first[:_id]
+  end
+
   it "should simply return on an empty input" do
     ds = FTS[:pariah_index_1].type(:pariah_type_1)
 
