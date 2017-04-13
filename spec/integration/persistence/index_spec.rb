@@ -38,4 +38,19 @@ describe Pariah::Dataset, "#index" do
 
     assert_equal [2, 4, 5, 7], ds.map{|r| r[:comments_count]}.sort
   end
+
+  it "should not fail when indexing a doc that has a newline in it" do
+    ds = FTS[:pariah_test_default].type(:pariah_test)
+
+    ds.index([
+      {title: "Title #1"},
+      {title: "Title #2 \n Some more stuff"},
+    ])
+
+    ds.refresh
+
+    assert_equal \
+      ["Title #1", "Title #2 \n Some more stuff"],
+      ds.map{|r| r[:title]}.sort
+  end
 end
