@@ -72,6 +72,10 @@ module Pariah
             metadata[:_id] = id
           end
 
+          if parent = record[:parent]
+            metadata[:parent] = parent
+          end
+
           if i = record.delete(:index)
             metadata[:_index] = i
           end
