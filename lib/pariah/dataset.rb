@@ -15,28 +15,7 @@ module Pariah
 
     def initialize(url)
       @opts = {}
-      @pool =
-        Pond.new do
-          Excon.new(
-            url,
-            persistent: true,
-          )
-        end
-
-      synchronize do |conn|
-        # Make sure that any indexes we create have sensible defaults.
-        execute_request(
-          method: :put,
-          path: '_template/template_all',
-          body: {
-            template: '*',
-            order: 0,
-            settings: {
-              'index.mapper.dynamic' => false
-            }
-          }
-        )
-      end
+      @pool = Pond.new { Excon.new(url, persistent: true) }
     end
 
     def synchronize(&block)

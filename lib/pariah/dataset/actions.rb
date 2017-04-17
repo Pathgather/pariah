@@ -15,6 +15,10 @@ module Pariah
           raise Error, "No index_schema specified!"
         end
 
+        # Ensure that dynamic field mapping is explicitly disallowed.
+        settings = schema[:settings] ||= {}
+        settings['index.mapper.dynamic'] = false
+
         execute_request(
           method: :put,
           path: single_index,
