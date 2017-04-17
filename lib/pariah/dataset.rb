@@ -24,9 +24,6 @@ module Pariah
         end
 
       synchronize do |conn|
-        # Ensure that the connection is good.
-        execute_request(method: :get, path: '_cluster/health')
-
         # Make sure that any indexes we create have sensible defaults.
         execute_request(
           method: :put,
