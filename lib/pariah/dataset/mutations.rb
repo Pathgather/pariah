@@ -69,7 +69,11 @@ module Pariah
         new_filter =
           case current_filter = @opts[:filter]
           when Bool
-            current_filter.merge(filter)
+            if current_filter.can_merge?(filter)
+              current_filter.merge(filter)
+            else
+              Bool.new(must: [current_filter, filter])
+            end
           when NilClass
             filter
           else

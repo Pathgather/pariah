@@ -14,6 +14,10 @@ module Pariah
         @must_not = wrap_arg(must_not)
       end
 
+      def can_merge?(other)
+        should.empty? && other.should.empty?
+      end
+
       def merge(other)
         self.class.new(
           must:     must     + other.must,
@@ -31,7 +35,7 @@ module Pariah
           hash[component] = value unless value.empty?
         end
 
-        hash
+        {bool: hash}
       end
 
       def to_json(*args)

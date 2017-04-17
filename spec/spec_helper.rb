@@ -84,7 +84,7 @@ class PariahSpec < Minitest::Spec
       end
       h
     else
-      block.call(v)
+      block.call(thing)
     end
   end
 
