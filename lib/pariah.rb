@@ -14,5 +14,9 @@ module Pariah
     def connect(url)
       Dataset.new(url)
     end
+
+    def bool(**args)
+      Bool.new(**args)
+    end
   end
 end

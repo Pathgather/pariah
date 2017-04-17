@@ -27,7 +27,7 @@ describe Pariah::Dataset do
     end
 
     it "should not load the results into the dataset on which it is called" do
-      ds = FTS[:pariah_index_1].term(comments_count: 5)
+      ds = FTS[:pariah_index_1].filter(term: {comments_count: 5})
       assert_nil ds.results
 
       titles = []
@@ -48,7 +48,7 @@ describe Pariah::Dataset do
 
   describe "#all" do
     it "should return an array of matching documents without mutating the dataset" do
-      ds = FTS[:pariah_index_1].term(comments_count: 5)
+      ds = FTS[:pariah_index_1].filter(term: {comments_count: 5})
       assert_nil ds.results
 
       all = ds.all
@@ -61,7 +61,7 @@ describe Pariah::Dataset do
 
   describe "#count" do
     it "should return a count of matching documents without mutating the dataset" do
-      ds = FTS[:pariah_index_1].term(comments_count: 5)
+      ds = FTS[:pariah_index_1].filter(term: {comments_count: 5})
       assert_nil ds.results
       assert_equal 2, ds.count
       assert_nil ds.results
@@ -70,7 +70,7 @@ describe Pariah::Dataset do
 
   describe "#load" do
     it "should copy the dataset and load the results into it" do
-      ds1 = FTS[:pariah_index_1].term(comments_count: 5)
+      ds1 = FTS[:pariah_index_1].filter(term: {comments_count: 5})
       assert_nil ds1.results
 
       ds2 = ds1.load

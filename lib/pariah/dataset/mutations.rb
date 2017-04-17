@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'pariah/dataset/filters/and'
-require 'pariah/dataset/filters/term'
-
 module Pariah
   class Dataset
     module Mutations
@@ -26,12 +23,20 @@ module Pariah
       end
       alias :append_type :append_types
 
-      def term(condition = {})
-        append_filters condition.map { |k, v| Filters::Term.new(k => v) }
-      end
+      def filter(*args)
+        bool = Bool.new(must: args)
 
-      def unfiltered
-        merge_replace(filter: nil)
+        new_filter =
+          case current_filter = @opts[:filter]
+          when Bool
+            current_filter.merge(bool)
+          when NilClass
+            bool
+          else
+            raise Error, "Unsupported filter option: #{current_filter.class}"
+          end
+
+        merge_replace filter: new_filter
       end
 
       def sort(*args)
@@ -67,20 +72,6 @@ module Pariah
       end
 
       protected
-
-      def append_filters(filters)
-        new_filter =
-          case current_filter = @opts[:filter]
-          when Filters::And
-            Filters::And.new(*current_filter.args, *filters)
-          when NilClass
-            filters.length > 1 ? Filters::And.new(*filters) : filters.first
-          else
-            Filters::And.new(current_filter, *filters)
-          end
-
-        merge_replace filter: new_filter
-      end
 
       def merge_replace(opts)
         clone.tap { |clone| clone.merge_replace!(opts) }

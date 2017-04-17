@@ -55,10 +55,36 @@ class PariahSpec < Minitest::Spec
 
   def assert_filter(ds, expected)
     actual = ds.to_query[:query][:bool][:filter]
+
     if expected.nil?
-      assert_nil expected
+      assert_nil actual
     else
-      assert_equal expected, actual
+      massaged_actual =
+        recurse(actual) do |thing|
+          case thing
+          when Pariah::Dataset::Bool
+            thing.to_hash
+          else
+            raise "Unsupported thing: #{thing.inspect}"
+          end
+        end
+
+      assert_equal expected, massaged_actual
+    end
+  end
+
+  def recurse(thing, &block)
+    case thing
+    when Array
+      thing.map(&block)
+    when Hash
+      h = {}
+      thing.each do |k,v|
+        h[k] = block.call(v)
+      end
+      h
+    else
+      block.call(v)
     end
   end
 

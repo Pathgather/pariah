@@ -11,7 +11,7 @@ module Pariah
         }
 
         if filter = @opts[:filter]
-          bool_query[:filter] = filter.to_query
+          bool_query[:filter] = {bool: filter}
         end
 
         body = {
