@@ -48,5 +48,14 @@ describe Pariah::Dataset do
           bool(must_not: {term: {topic: 'a'}}).
           map{|doc| doc[:title]}.sort
     end
+
+    it "should handle appending bools with mixed arguments" do
+      assert_equal \
+        ["Title 1", "Title 3"],
+        FTS.
+          bool(must: {term: {comments_count: 5}}).
+          bool(must_not: {term: {topic: 'b'}}).
+          map{|doc| doc[:title]}.sort
+    end
   end
 end
