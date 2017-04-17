@@ -23,20 +23,12 @@ module Pariah
       end
       alias :append_type :append_types
 
+      def bool(**args)
+        merge_filter(Bool.new(args))
+      end
+
       def filter(*args)
-        bool = Bool.new(must: args)
-
-        new_filter =
-          case current_filter = @opts[:filter]
-          when Bool
-            current_filter.merge(bool)
-          when NilClass
-            bool
-          else
-            raise Error, "Unsupported filter option: #{current_filter.class}"
-          end
-
-        merge_replace filter: new_filter
+        merge_filter(Bool.new(must: args))
       end
 
       def sort(*args)
@@ -72,6 +64,20 @@ module Pariah
       end
 
       protected
+
+      def merge_filter(filter)
+        new_filter =
+          case current_filter = @opts[:filter]
+          when Bool
+            current_filter.merge(filter)
+          when NilClass
+            filter
+          else
+            raise Error, "Unsupported filter option: #{current_filter.class}"
+          end
+
+        merge_replace filter: new_filter
+      end
 
       def merge_replace(opts)
         clone.tap { |clone| clone.merge_replace!(opts) }

@@ -8,10 +8,10 @@ module Pariah
       attr_reader(*COMPONENTS)
 
       def initialize(must: nil, filter: nil, should: nil, must_not: nil)
-        @must     = Array(must).compact
-        @filter   = Array(filter).compact
-        @should   = Array(should).compact
-        @must_not = Array(must_not).compact
+        @must     = wrap_arg(must)
+        @filter   = wrap_arg(filter)
+        @should   = wrap_arg(should)
+        @must_not = wrap_arg(must_not)
       end
 
       def merge(other)
@@ -36,6 +36,17 @@ module Pariah
 
       def to_json(*args)
         to_hash.to_json(*args)
+      end
+
+      def wrap_arg(input)
+        case input
+        when NilClass
+          []
+        when Array
+          input
+        else
+          [input]
+        end
       end
     end
   end
