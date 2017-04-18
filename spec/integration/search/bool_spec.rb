@@ -19,13 +19,15 @@ describe Pariah::Dataset do
   describe "#bool" do
     it "should add a bool filter with the given options to the search" do
       assert_equal ["Title 4", "Title 5", "Title 6"],
-        FTS.bool(must_not: {term: {comments_count: 5}}).map{|doc| doc[:title]}.sort
+        TestIndex.
+          bool(must_not: {term: {comments_count: 5}}).
+          map{|doc| doc[:title]}.sort
     end
 
     it "should handle appending bools with must arguments" do
       assert_equal \
         ["Title 1", "Title 3"],
-        FTS.
+        TestIndex.
           bool(must: {term: {comments_count: 5}}).
           bool(must: {term: {topic: 'a'}}).
           map{|doc| doc[:title]}.sort
@@ -34,7 +36,7 @@ describe Pariah::Dataset do
     it "should handle appending bools with should arguments" do
       assert_equal \
         ["Title 2", "Title 5"],
-        FTS.
+        TestIndex.
           bool(should: [{term: {comments_count: 5}}, {term: {topic: 'a'}}]).
           bool(should: [{term: {comments_count: 9}}, {term: {topic: 'b'}}]).
           map{|doc| doc[:title]}.sort
@@ -43,7 +45,7 @@ describe Pariah::Dataset do
     it "should handle appending bools with must_not arguments" do
       assert_equal \
         ["Title 4", "Title 6"],
-        FTS.
+        TestIndex.
           bool(must_not: {term: {comments_count: 5}}).
           bool(must_not: {term: {topic: 'a'}}).
           map{|doc| doc[:title]}.sort
@@ -52,7 +54,7 @@ describe Pariah::Dataset do
     it "should handle appending bools with mixed arguments" do
       assert_equal \
         ["Title 1", "Title 3"],
-        FTS.
+        TestIndex.
           bool(must: {term: {comments_count: 5}}).
           bool(must_not: {term: {topic: 'b'}}).
           map{|doc| doc[:title]}.sort

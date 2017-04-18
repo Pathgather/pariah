@@ -49,6 +49,7 @@ TestIndex =
     )
 
 TestIndex.create_index
+TestIndex[:pariah_index_2].create_index
 
 class PariahSpec < Minitest::Spec
   register_spec_type(//, self)
