@@ -63,6 +63,10 @@ module Pariah
         merge_replace(index_schema: schema)
       end
 
+      def with_extend(&block)
+        clone.tap { |c| c.extend(Module.new(&block)) }
+      end
+
       protected
 
       def merge_filter(filter)
