@@ -11,12 +11,12 @@ module Pariah
   class Error < StandardError; end
 
   class << self
-    def connect(url)
-      Dataset.new(url)
+    def connect(*args)
+      Dataset.new(*args)
     end
 
-    def bool(**args)
-      Dataset::Bool.new(**args)
+    def bool(*args)
+      Dataset::Bool.new(*args)
     end
   end
 end
