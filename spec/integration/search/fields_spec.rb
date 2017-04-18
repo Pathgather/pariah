@@ -14,6 +14,19 @@ describe Pariah::Dataset do
     @ds = FTS[:pariah_index_1]
   end
 
+  describe "#exclude_source" do
+    it "should cause the source hash to not be returned" do
+      ds = @ds.exclude_source.load
+      hits = ds.results[:hits][:hits]
+
+      hits.each do |hit|
+        refute hit.has_key?(:_source)
+      end
+
+      assert_equal [nil] * hits.length, ds.all
+    end
+  end
+
   describe "#fields" do
     it "should select the fields to be returned" do
       datasets = [

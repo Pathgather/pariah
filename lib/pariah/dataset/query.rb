@@ -32,22 +32,19 @@ module Pariah
           body[:from] = from
         end
 
-        include_fields = @opts[:include_fields]
-        exclude_fields = @opts[:exclude_fields]
+        source_option =
+          if @opts[:exclude_source]
+            false
+          elsif (include_fields = @opts[:include_fields]) ||
+                (exclude_fields = @opts[:exclude_fields])
 
-        if include_fields || exclude_fields
-          source = {}
-
-          if include_fields
-            source[:include] = include_fields
+            o = {}
+            o[:include] = include_fields if include_fields
+            o[:exclude] = exclude_fields if exclude_fields
+            o
           end
 
-          if exclude_fields
-            source[:exclude] = exclude_fields
-          end
-
-          body[:_source] = source
-        end
+        body[:_source] = source_option unless source_option.nil?
 
         if aggregates = @opts[:aggregates]
           hash = {}

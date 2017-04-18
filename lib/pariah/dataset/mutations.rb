@@ -47,6 +47,10 @@ module Pariah
         merge_replace(aggregates: aggregates)
       end
 
+      def exclude_source(setting = true)
+        merge_replace(exclude_source: setting)
+      end
+
       def fields(*fields)
         merge_replace(include_fields: fields)
       end
