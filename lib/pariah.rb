@@ -16,7 +16,7 @@ module Pariah
     end
 
     def bool(**args)
-      Bool.new(**args)
+      Dataset::Bool.new(**args)
     end
   end
 end
