@@ -5,10 +5,10 @@ require 'spec_helper'
 describe Pariah::Dataset do
   before do
     store [
-      {type: 'pariah_type_1', title: "Title 1", comments_count: 1},
-      {type: 'pariah_type_1', title: "Title 2", comments_count: 2},
-      {type: 'pariah_type_2', title: "Title 3", comments_count: 3},
-      {type: 'pariah_type_2', title: "Title 4", comments_count: 4},
+      {_type: 'pariah_type_1', title: "Title 1", comments_count: 1},
+      {_type: 'pariah_type_1', title: "Title 2", comments_count: 2},
+      {_type: 'pariah_type_2', title: "Title 3", comments_count: 3},
+      {_type: 'pariah_type_2', title: "Title 4", comments_count: 4},
     ]
   end
 

@@ -7,10 +7,10 @@ describe Pariah::Dataset do
     TestIndex[:pariah_index_3].create_index
 
     store [
-      {index: :pariah_index_1, title: "Title 1", comments_count: 1},
-      {index: :pariah_index_1, title: "Title 2", comments_count: 2},
-      {index: :pariah_index_2, title: "Title 3", comments_count: 3},
-      {index: :pariah_index_3, title: "Title 4", comments_count: 4},
+      {_index: :pariah_index_1, title: "Title 1", comments_count: 1},
+      {_index: :pariah_index_1, title: "Title 2", comments_count: 2},
+      {_index: :pariah_index_2, title: "Title 3", comments_count: 3},
+      {_index: :pariah_index_3, title: "Title 4", comments_count: 4},
     ]
   end
 

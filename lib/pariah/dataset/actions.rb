@@ -72,19 +72,19 @@ module Pariah
         records.each do |record|
           metadata = {}
 
-          if id = record[:id]
+          if id = record[:_id] || record[:id]
             metadata[:_id] = id
           end
 
-          if parent = record[:parent]
+          if parent = record[:_parent]
             metadata[:parent] = parent
           end
 
-          if i = record.delete(:index)
+          if i = record.delete(:_index)
             metadata[:_index] = i
           end
 
-          if t = record.delete(:type)
+          if t = record.delete(:_type)
             metadata[:_type] = t
           elsif i
             # We're sending the record to a different index, so we need to

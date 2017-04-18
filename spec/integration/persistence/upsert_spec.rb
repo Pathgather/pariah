@@ -68,12 +68,12 @@ describe Pariah::Dataset, "#upsert" do
       ds.map{|r| r[:title]}.sort
   end
 
-  it "should respect a specific type field" do
+  it "should respect a specific _type field" do
     ds = FTS[:pariah_index_1]
 
     ds.type(:pariah_type_1).upsert([
       {comments_count: 5},
-      {comments_count: 7, type: :pariah_type_2},
+      {comments_count: 7, _type: :pariah_type_2},
     ])
 
     ds.refresh
@@ -81,10 +81,10 @@ describe Pariah::Dataset, "#upsert" do
     assert_equal [7], ds.type(:pariah_type_2).map{|r| r[:comments_count]}.sort
   end
 
-  it "should respect a specific index field" do
+  it "should respect a specific _index field" do
     FTS[:pariah_index_1].type(:pariah_type_1).upsert([
       {comments_count: 5},
-      {comments_count: 7, index: :pariah_index_2},
+      {comments_count: 7, _index: :pariah_index_2},
     ])
 
     FTS.refresh
