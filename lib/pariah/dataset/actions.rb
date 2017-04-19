@@ -99,11 +99,18 @@ module Pariah
 
         body = rows.join("\n") << "\n"
 
-        execute_request(
-          method: :post,
-          path: [single_index, single_type, '_bulk'],
-          body: body,
-        )
+        r =
+          execute_request(
+            method: :post,
+            path: [single_index, single_type, '_bulk'],
+            body: body,
+          )
+
+        if r[:errors]
+          raise Error, "errors raised on upsert: #{r.inspect}"
+        end
+
+        r
       end
 
       protected
