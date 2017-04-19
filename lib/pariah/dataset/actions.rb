@@ -72,12 +72,12 @@ module Pariah
         records.each do |record|
           metadata = {}
 
-          if id = record[:_id] || record[:id]
+          if id = record.delete(:_id) || record[:id]
             metadata[:_id] = id
           end
 
-          if parent = record[:_parent]
-            metadata[:parent] = parent
+          if parent = record.delete(:_parent)
+            metadata[:_parent] = parent
           end
 
           if i = record.delete(:_index)
