@@ -19,7 +19,7 @@ module Pariah
         excon_options[:persistent] = true
       end
 
-      @opts = {}
+      @opts = {query: {match_all: {}}}
       @pool = Pond.new { Excon.new(url, excon_options) }
     end
 

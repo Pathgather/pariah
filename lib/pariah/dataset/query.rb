@@ -5,9 +5,7 @@ module Pariah
     module Query
       def to_query
         bool_query = {
-          must: {
-            match_all: {}
-          }
+          must: (@opts[:query] || {match_all: {}})
         }
 
         if filter = @opts[:filter]

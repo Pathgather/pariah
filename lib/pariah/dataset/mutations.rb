@@ -71,6 +71,11 @@ module Pariah
         clone.tap { |c| c.extend(Module.new(&block)) }
       end
 
+      def query
+        current_query = @opts[:query] || {match_all: {}}
+        merge_replace(query: yield(current_query))
+      end
+
       protected
 
       def merge_filter(filter)
