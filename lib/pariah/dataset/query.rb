@@ -30,6 +30,10 @@ module Pariah
           body[:from] = from
         end
 
+        if explain = @opts[:explain]
+          body[:explain] = explain
+        end
+
         source_option =
           if @opts[:exclude_source]
             false

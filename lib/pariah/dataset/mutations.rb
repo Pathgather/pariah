@@ -76,6 +76,10 @@ module Pariah
         merge_replace(query: yield(current_query))
       end
 
+      def include_explanation
+        merge_replace(explain: true)
+      end
+
       protected
 
       def merge_filter(filter)
