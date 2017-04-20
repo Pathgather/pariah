@@ -34,6 +34,10 @@ module Pariah
           body[:explain] = explain
         end
 
+        if search_after = @opts[:search_after]
+          body[:search_after] = search_after
+        end
+
         source_option =
           if @opts[:exclude_source]
             false

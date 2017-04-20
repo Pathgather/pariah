@@ -80,6 +80,10 @@ module Pariah
         merge_replace(explain: true)
       end
 
+      def search_after(values)
+        merge_replace(search_after: values)
+      end
+
       protected
 
       def merge_filter(filter)
