@@ -38,6 +38,10 @@ module Pariah
           body[:search_after] = search_after
         end
 
+        if post_filter = @opts[:post_filter]
+          body[:post_filter] = post_filter
+        end
+
         source_option =
           if @opts[:exclude_source]
             false

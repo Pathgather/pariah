@@ -31,6 +31,10 @@ module Pariah
         merge_filter(Bool.new(must: args))
       end
 
+      def post_filter(filter)
+        merge_replace(post_filter: filter)
+      end
+
       def sort(*args)
         merge_replace(sort: args.flatten)
       end
