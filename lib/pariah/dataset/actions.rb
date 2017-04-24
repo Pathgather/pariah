@@ -46,7 +46,7 @@ module Pariah
         end
       end
 
-      def aggregate_results
+      def aggregations
         with_loaded_results { |ds| ds.results[:aggregations] }
       end
 

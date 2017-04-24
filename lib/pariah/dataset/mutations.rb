@@ -43,8 +43,8 @@ module Pariah
         merge_replace(from: from)
       end
 
-      def aggregates(*aggregates)
-        merge_replace(aggregates: aggregates)
+      def aggs(*aggs)
+        merge_replace(aggs: aggs)
       end
 
       def exclude_source(setting = true)

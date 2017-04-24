@@ -52,10 +52,10 @@ module Pariah
 
         body[:_source] = source_option unless source_option.nil?
 
-        if aggregates = @opts[:aggregates]
-          hash = {}
-          aggregates.each { |field| hash[field] = { terms: { field: field } } }
-          body[:aggs] = hash
+        if aggs = @opts[:aggs]
+          body[:aggs] = aggs.each_with_object({}) do |agg, hash|
+            hash[agg] = { terms: { field: agg } }
+          end
         end
 
         body
