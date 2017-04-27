@@ -46,6 +46,14 @@ module Pariah
         end
       end
 
+      def delete
+        execute_request(
+          method: :post,
+          path: [indices_as_string, types_as_string, '_delete_by_query'],
+          body: to_query,
+        )
+      end
+
       def aggregations
         with_loaded_results { |ds| ds.results[:aggregations] }
       end
