@@ -17,7 +17,7 @@ describe Pariah::Dataset do
 
   describe "#aggs" do
     it "specifies a list of fields to aggregate on" do
-      ds = FTS[:pariah_index_1].aggs(:_type, :topic)
+      ds = FTS[:pariah_index_1].aggs(_type: {terms: {field: :_type}}, topic: {terms: {field: :topic}})
       results = ds.aggregations
 
       categories = results[:topic][:buckets]
@@ -34,7 +34,7 @@ describe Pariah::Dataset do
     it "applies a post filter that won't affect the aggregates" do
       ds =
         FTS[:pariah_index_1].
-          aggs(:topic).
+          aggs(topic: {terms: {field: :topic}}).
           post_filter(term: {topic: "sit"}).
           load
 

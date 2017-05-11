@@ -57,9 +57,7 @@ module Pariah
         body[:_source] = source_option unless source_option.nil?
 
         if aggs = @opts[:aggs]
-          body[:aggs] = aggs.each_with_object({}) do |agg, hash|
-            hash[agg] = { terms: { field: agg } }
-          end
+          body[:aggs] = aggs.first
         end
 
         body
