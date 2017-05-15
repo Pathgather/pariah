@@ -27,6 +27,47 @@ module Pariah
         )
       end
 
+      def reindex
+        target_index_name = single_index
+
+        existing_aliases =
+          execute_request(
+            method: :get,
+            path: [target_index_name, '_aliases']
+          ).keys.map(&:to_s)
+
+        new_index_name = "#{target_index_name}-#{Time.now.to_f}"
+        new_index_ds   = self[new_index_name]
+
+        new_index_ds.create_index
+        yield(new_index_ds)
+
+        actions = []
+
+        existing_aliases.each do |existing_alias|
+          if existing_alias == target_index_name
+            # It's the name of an actual index, so we can't do zero-downtime,
+            # but do the best we can.
+            drop_index
+          else
+            actions.push(remove: {index: existing_alias, alias: target_index_name})
+          end
+        end
+
+        actions.push(add: {index: new_index_name, alias: target_index_name})
+
+        execute_request(
+          method: :post,
+          path: '_aliases',
+          body: {actions: actions}
+        )
+        refresh
+        true
+      rescue
+        self[new_index_name].drop_index
+        raise
+      end
+
       def drop_index
         execute_request(
           method: :delete,
