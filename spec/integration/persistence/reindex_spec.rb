@@ -78,6 +78,19 @@ describe Pariah::Dataset, "#reindex" do
     )
   end
 
+  it "should also work if the index didn't previously exist" do
+    TestIndex.drop_index
+
+    TestIndex.reindex do |ds|
+      ds.type(:pariah_type_1).upsert([
+        {title: "Title 1", comments_count: 5},
+        {title: "Title 2", comments_count: 9},
+      ])
+    end
+
+    assert_equal ["Title 1", "Title 2"], TestIndex.map{|r| r[:title]}.sort
+  end
+
   describe "when raising an error" do
     it "should destroy the temporary index and leave the original index intact" do
       error = assert_raises(RuntimeError) do

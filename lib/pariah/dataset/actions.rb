@@ -30,11 +30,19 @@ module Pariah
       def reindex
         target_index_name = single_index
 
-        existing_aliases =
+        resp =
           execute_request(
             method: :get,
-            path: [target_index_name, '_aliases']
-          ).keys.map(&:to_s)
+            path: [target_index_name, '_aliases'],
+            allowed_codes: [200, 404]
+          )
+
+        existing_aliases =
+          if resp[:status] == 404
+            []
+          else
+            resp.keys.map(&:to_s)
+          end
 
         new_index_name = "#{target_index_name}-#{Time.now.to_f}"
         new_index_ds   = self[new_index_name]
@@ -61,7 +69,7 @@ module Pariah
           path: '_aliases',
           body: {actions: actions}
         )
-        refresh
+        new_index_ds.refresh
         true
       rescue
         self[new_index_name].drop_index
