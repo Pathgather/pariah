@@ -37,6 +37,17 @@ describe Pariah::Dataset, "#reindex" do
             {new_index_name.to_sym => {aliases: {pariah_index_1: {}}}},
             aliases
           )
+
+          indexes =
+            FTS.send(
+              :execute_request,
+              method: :get,
+              path: '_cat/indices/pariah_index_1*?format=json',
+            )
+
+          names = indexes.map{|i| i[:index]}
+
+          assert_equal [new_index_name], names
         end
 
         describe "when the block throws an error" do

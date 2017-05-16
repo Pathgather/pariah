@@ -37,7 +37,7 @@ module Pariah
             allowed_codes: [200, 404]
           )
 
-        existing_aliases =
+        preexisting_indexes =
           if resp[:status] == 404
             []
           else
@@ -52,13 +52,13 @@ module Pariah
 
         actions = []
 
-        existing_aliases.each do |existing_alias|
-          if existing_alias == target_index_name
+        preexisting_indexes.each do |preexisting_index|
+          if preexisting_index == target_index_name
             # It's the name of an actual index, so we can't do zero-downtime,
             # but do the best we can.
             drop_index
           else
-            actions.push(remove: {index: existing_alias, alias: target_index_name})
+            actions.push(remove: {index: preexisting_index, alias: target_index_name})
           end
         end
 
@@ -69,6 +69,15 @@ module Pariah
           path: '_aliases',
           body: {actions: actions}
         )
+
+        preexisting_indexes.each do |preexisting_index|
+          if preexisting_index == target_index_name
+            next # Already dropped.
+          else
+            self[preexisting_index].drop_index
+          end
+        end
+
         new_index_ds.refresh
         true
       rescue
