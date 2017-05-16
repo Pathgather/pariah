@@ -28,23 +28,27 @@ module Pariah
       end
 
       def reindex
-        target_index_name = single_index
+        target_alias = single_index
 
-        resp =
+        # Is this already an alias for something else?
+        aliases =
           execute_request(
             method: :get,
-            path: [target_index_name, '_aliases'],
-            allowed_codes: [200, 404]
+            path: [target_alias, '_aliases'],
+            allowed_codes: [200, 404],
           )
 
         preexisting_indexes =
-          if resp[:status] == 404
+          if aliases[:status] == 404
             []
           else
-            resp.keys.map(&:to_s)
+            aliases.keys.map(&:to_s)
           end
 
-        new_index_name = "#{target_index_name}-#{Time.now.to_f}"
+        # Actual index names are the alias name plus the number of nanoseconds
+        # since epoch. This helps avoid collisions, which could happen in specs.
+        nanoseconds_since_epoch = (Time.now.to_f * 100_000_000).round
+        new_index_name = "#{target_alias}-#{nanoseconds_since_epoch}"
         new_index_ds   = self[new_index_name]
 
         new_index_ds.create_index
@@ -52,17 +56,17 @@ module Pariah
 
         actions = []
 
-        preexisting_indexes.each do |preexisting_index|
-          if preexisting_index == target_index_name
-            # It's the name of an actual index, so we can't do zero-downtime,
-            # but do the best we can.
+        preexisting_indexes.each do |index|
+          if index == target_alias
+            # The target alias is the name of an actual index, so we can't do
+            # zero-downtime, but do the best we can.
             drop_index
           else
-            actions.push(remove: {index: preexisting_index, alias: target_index_name})
+            actions.push(remove: {index: index, alias: target_alias})
           end
         end
 
-        actions.push(add: {index: new_index_name, alias: target_index_name})
+        actions.push(add: {index: new_index_name, alias: target_alias})
 
         execute_request(
           method: :post,
@@ -70,11 +74,11 @@ module Pariah
           body: {actions: actions}
         )
 
-        preexisting_indexes.each do |preexisting_index|
-          if preexisting_index == target_index_name
+        preexisting_indexes.each do |index|
+          if index == target_alias
             next # Already dropped.
           else
-            self[preexisting_index].drop_index
+            self[index].drop_index
           end
         end
 

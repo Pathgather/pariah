@@ -8,7 +8,7 @@ describe Pariah::Dataset, "#reindex" do
   module ItReindexesProperly
     def self.included(base)
       base.class_eval do
-        it "should create a new timestamped index and alias it to the given name" do
+        it "should create a new index and alias it to the given name" do
           new_index_name = nil
 
           result =
@@ -24,7 +24,7 @@ describe Pariah::Dataset, "#reindex" do
           assert_equal true, result
           assert_equal ["Title 1", "Title 2"], TestIndex.map{|r| r[:title]}.sort
 
-          assert_match(/\Apariah_index_1-\d{10,12}\.\d+\z/, new_index_name)
+          assert_match(/\Apariah_index_1-\d{18}\z/, new_index_name)
 
           aliases =
             FTS.send(
