@@ -3,15 +3,75 @@
 require 'spec_helper'
 
 describe Pariah::Dataset, "#reindex" do
-  before do
-    store [
-      {title: "Title 1", comments_count: 5},
-      {title: "Title 2", comments_count: 9},
-      {title: "Title 3", comments_count: 5},
-    ]
+  after { clear_indices }
+
+  module ItReindexesProperly
+    def self.included(base)
+      base.class_eval do
+        it "should create a new timestamped index and alias it to the given name" do
+          new_index_name = nil
+
+          result =
+            TestIndex.reindex do |ds|
+              new_index_name = ds.send(:single_index)
+
+              ds.type(:pariah_type_1).upsert([
+                {title: "Title 1", comments_count: 5},
+                {title: "Title 2", comments_count: 9},
+              ])
+            end
+
+          assert_equal true, result
+          assert_equal ["Title 1", "Title 2"], TestIndex.map{|r| r[:title]}.sort
+
+          assert_match(/\Apariah_index_1-\d{10,12}\.\d+\z/, new_index_name)
+
+          aliases =
+            FTS.send(
+              :execute_request,
+              method: :get,
+              path: [new_index_name, '_aliases']
+            )
+
+          assert_equal(
+            {new_index_name.to_sym => {aliases: {pariah_index_1: {}}}},
+            aliases
+          )
+        end
+
+        it "should recover properly from an error"
+      end
+    end
   end
 
-  after { clear_indices }
+  describe "when the index hasn't been created yet" do
+    include ItReindexesProperly
+  end
+
+  describe "when there is an index with the given name already in place" do
+    include ItReindexesProperly
+
+    before do
+      store [
+        {title: "Title 1", comments_count: 5},
+        {title: "Title 2", comments_count: 9},
+        {title: "Title 3", comments_count: 5},
+      ]
+    end
+  end
+
+  describe "where there is an alias with the given name already in place" do
+    include ItReindexesProperly
+
+    before do
+      TestIndex.reindex do |ds|
+        ds.type(:pariah_type_1).upsert([
+          {title: "Title 1", comments_count: 5},
+          {title: "Title 2", comments_count: 9},
+        ])
+      end
+    end
+  end
 
   it "should create a new timestamped index and alias it to the given name" do
     new_index_name = nil
@@ -93,6 +153,12 @@ describe Pariah::Dataset, "#reindex" do
 
   describe "when raising an error" do
     it "should destroy the temporary index and leave the original index intact" do
+      store [
+        {title: "Title 1", comments_count: 5},
+        {title: "Title 2", comments_count: 9},
+        {title: "Title 3", comments_count: 5},
+      ]
+
       error = assert_raises(RuntimeError) do
         TestIndex.reindex do |ds|
           ds.type(:pariah_type_1).upsert([
