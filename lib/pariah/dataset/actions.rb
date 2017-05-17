@@ -27,7 +27,7 @@ module Pariah
         )
       end
 
-      def reindex
+      def rewrite_index
         target_alias = single_index
 
         # Is this already an alias for something else?

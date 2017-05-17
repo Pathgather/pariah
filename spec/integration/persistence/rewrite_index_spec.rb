@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Pariah::Dataset, "#reindex" do
+describe Pariah::Dataset, "#rewrite_index" do
   after { clear_indices }
 
   module ItReindexesProperly
@@ -12,7 +12,7 @@ describe Pariah::Dataset, "#reindex" do
           new_index_name = nil
 
           result =
-            TestIndex.reindex do |ds|
+            TestIndex.rewrite_index do |ds|
               new_index_name = ds.send(:single_index)
 
               ds.type(:pariah_type_1).upsert([
@@ -75,7 +75,7 @@ describe Pariah::Dataset, "#reindex" do
             records_before = get_records
 
             error = assert_raises(RuntimeError) do
-              TestIndex.reindex do |ds|
+              TestIndex.rewrite_index do |ds|
                 ds.type(:pariah_type_1).upsert([
                   {title: "Title 4", comments_count: 5},
                   {title: "Title 5", comments_count: 9},
@@ -122,7 +122,7 @@ describe Pariah::Dataset, "#reindex" do
     include ItReindexesProperly
 
     before do
-      TestIndex.reindex do |ds|
+      TestIndex.rewrite_index do |ds|
         ds.type(:pariah_type_1).upsert([
           {title: "Title 1", comments_count: 5},
           {title: "Title 2", comments_count: 9},
