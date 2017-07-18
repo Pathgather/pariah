@@ -15,10 +15,6 @@ module Pariah
     attr_reader :opts, :results
 
     def initialize(url, excon_options: {})
-      unless excon_options.has_key?(:persistent)
-        excon_options[:persistent] = true
-      end
-
       @opts = {}
       @pool = Pond.new { Excon.new(url, excon_options) }
     end
