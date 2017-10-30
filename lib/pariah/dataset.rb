@@ -55,6 +55,13 @@ module Pariah
       synchronize do |conn|
         response = conn.send(method, opts)
 
+        if (warning = response.headers["Warning"]) && (p = Pariah.warning_proc)
+          p.call(
+            warning,
+            JSON.parse(body, symbolize_names: true)
+          )
+        end
+
         unless allowed_codes.include?(response.status)
           raise Error, "unexpected Elasticsearch response: #{response.inspect}"
         end

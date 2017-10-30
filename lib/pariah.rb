@@ -11,6 +11,8 @@ module Pariah
   class Error < StandardError; end
 
   class << self
+    attr_accessor :warning_proc
+
     def connect(*args)
       Dataset.new(*args)
     end
