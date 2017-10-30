@@ -49,8 +49,8 @@ module Pariah
                 (exclude_fields = @opts[:exclude_fields])
 
             o = {}
-            o[:include] = include_fields if include_fields
-            o[:exclude] = exclude_fields if exclude_fields
+            o[:includes] = include_fields if include_fields
+            o[:excludes] = exclude_fields if exclude_fields
             o
           end
 
