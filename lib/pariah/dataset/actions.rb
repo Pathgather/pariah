@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "set"
+
 module Pariah
   class Dataset
     module Actions
@@ -94,6 +96,23 @@ module Pariah
           method: :delete,
           path: indices_as_string,
         )
+      end
+
+      def drop_orphaned_indexes(filter: nil)
+        indexes =
+          execute_request(method: :get, path: "/_cat/indices?format=json").
+          map{|h| h[:index]}
+
+        indexes_with_aliases =
+          execute_request(method: :get, path: "/_cat/aliases?format=json").
+          map{|h| h[:index]}.
+          to_set
+
+        indexes = indexes.grep(filter) if filter
+
+        indexes.
+          reject{|index| indexes_with_aliases.include?(index)}.
+          each{|i| self[i].drop_index}
       end
 
       def each(&block)
