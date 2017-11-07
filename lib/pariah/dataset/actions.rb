@@ -80,21 +80,31 @@ module Pariah
           if index == target_alias
             next # Already dropped.
           else
-            self[index].drop_index
+            self[index].drop_index?
           end
         end
 
         new_index_ds.refresh
         true
       rescue
-        self[new_index_name].drop_index
+        self[new_index_name].drop_index?
         raise
       end
 
-      def drop_index
+      def drop_index(allowed_errors: [])
         execute_request(
           method: :delete,
           path: indices_as_string,
+          allowed_errors: allowed_errors,
+        )
+      end
+
+      def drop_index?
+        drop_index(
+          allowed_errors: [
+            "no such index",
+            /Cannot delete indices that are being snapshotted/,
+          ]
         )
       end
 

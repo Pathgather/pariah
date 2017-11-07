@@ -29,7 +29,8 @@ module Pariah
       method:,
       path:,
       body: nil,
-      allowed_codes: DEFAULT_ALLOWED_CODES
+      allowed_codes: DEFAULT_ALLOWED_CODES,
+      allowed_errors: nil
     )
       path =
         case path
@@ -62,11 +63,19 @@ module Pariah
           )
         end
 
+        body = JSON.parse(response.body, symbolize_names: true)
+
+        if allowed_errors && reason = body.dig(:error, :reason)
+          if allowed_errors.any? { |e| e === reason }
+            return false
+          end
+        end
+
         unless allowed_codes.include?(response.status)
           raise Error, "unexpected Elasticsearch response: #{response.inspect}"
         end
 
-        JSON.parse(response.body, symbolize_names: true)
+        body
       end
     end
   end
