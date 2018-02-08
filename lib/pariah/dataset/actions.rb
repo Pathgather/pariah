@@ -29,7 +29,11 @@ module Pariah
         )
       end
 
-      def rewrite_index
+      # Optionally accept a target index name and an override of the error
+      # logic, so that the caller can continue an interrupted rewrite. The
+      # assumption is that if you're passing in a target index name, that index
+      # already exists and is in progress.
+      def rewrite_index(index_name: nil, drop_progress_on_error: false)
         target_alias = single_index
 
         # Is this already an alias for something else?
@@ -47,14 +51,19 @@ module Pariah
             aliases.keys.map(&:to_s)
           end
 
-        # Actual index names are the alias name plus the number of nanoseconds
-        # since epoch. This helps avoid collisions, which could happen in specs.
-        nanoseconds_since_epoch = (Time.now.to_f * 100_000_000).round
-        new_index_name = "#{target_alias}-#{nanoseconds_since_epoch}"
-        new_index_ds   = self[new_index_name]
+        if index_name
+          index_ds = self[index_name]
+        else
+          # Actual index names are the alias name plus the number of nanoseconds
+          # since epoch. This helps avoid collisions, which could happen in
+          # specs.
+          nanoseconds_since_epoch = (Time.now.to_f * 100_000_000).round
+          index_name = "#{target_alias}-#{nanoseconds_since_epoch}"
+          index_ds = self[index_name]
+          index_ds.create_index
+        end
 
-        new_index_ds.create_index
-        yield(new_index_ds)
+        yield(index_ds)
 
         actions = []
 
@@ -68,7 +77,7 @@ module Pariah
           end
         end
 
-        actions.push(add: {index: new_index_name, alias: target_alias})
+        actions.push(add: {index: index_name, alias: target_alias})
 
         execute_request(
           method: :post,
@@ -84,10 +93,10 @@ module Pariah
           end
         end
 
-        new_index_ds.refresh
+        index_ds.refresh
         true
       rescue
-        self[new_index_name].drop_index?
+        self[index_name].drop_index? if drop_progress_on_error
         raise
       end
 
