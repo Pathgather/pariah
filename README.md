@@ -1,3 +1,5 @@
+# THIS REPOSITORY HAS BEEN ARCHIVED AND IS NO LONGER MAINTAINED
+
 # Pariah
 
 TODO: Write a gem description
